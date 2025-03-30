@@ -21,35 +21,6 @@ class Reaction:
         self.examples = examples or {}
         self._rxn = AllChem.ReactionFromSmarts(self.reaction_smarts)
 
-    # def react(self, mol: Chem.Mol | str) -> list[Chem.Mol] | None:
-    #     """ 
-    #     React a molecule.
-
-    #     Parameters
-    #     ----------
-    #     mol : Chem.Mol | str
-    #         The molecule to react.
-
-    #     Returns
-    #     -------
-    #     list[Chem.Mol] | None
-    #         The products of the reaction.
-    #     """
-
-    #     # If the molecule is a string, convert it to a molecule
-    #     if isinstance(mol, str):
-    #         mol = Chem.MolFromSmiles(mol)
-
-    #     # Run the reaction
-    #     products = self._rxn.RunReactants((mol,))
-
-    #     # If the reaction does not produce any products, return None
-    #     if len(products) == 0:
-    #         return None
-
-    #     # Return the products
-    #     return [product[0] for product in products]
-
     def react(self, mol: Chem.Mol | str) -> list[Chem.Mol] | None:
         """React a molecule."""
         if isinstance(mol, str):
