@@ -3,7 +3,9 @@ from rdkit.Chem import AllChem
 
 
 class Reaction:
-    def __init__(self, name: str, reaction_smarts: str, examples: dict[str, str] = None):
+    def __init__(
+        self, name: str, reaction_smarts: str, examples: dict[str, str] = None
+    ):
         """
         Initialize a reaction with a name, reactant SMARTS, and reaction SMARTS.
 
@@ -21,8 +23,20 @@ class Reaction:
         self.examples = examples or {}
         self._rxn = AllChem.ReactionFromSmarts(self.reaction_smarts)
 
-    def react(self, mol: Chem.Mol | str) -> list[Chem.Mol] | None:
-        """React a molecule."""
+    def _react(self, mol: Chem.Mol | str) -> list[Chem.Mol] | None:
+        """
+        Attempt to react a molecule to product a degradation product
+
+        Parameters
+        ----------
+        mol : Chem.Mol | str
+            The molecule to react.
+
+        Returns
+        -------
+        list[Chem.Mol] | None
+            A list of the products of the reaction.
+        """
         if isinstance(mol, str):
             mol = Chem.MolFromSmiles(mol)
 
@@ -34,7 +48,7 @@ class Reaction:
         # Use a set to collect unique product SMILES
         unique_products = set()
         valid_products = []
-        
+
         # Iterate through all products
         for product_tuple in products:
             product = product_tuple[0]
@@ -43,8 +57,25 @@ class Reaction:
             if product_smiles not in unique_products:
                 unique_products.add(product_smiles)
                 valid_products.append(product)
-        
+
         return valid_products
+
+    def react(self, reactant: str) -> list[str] | None:
+        """
+        Entry point for the reaction. Some reactions may need to override this method to handle specific cases. This
+        would mostly occur when there is a preferential product formation over others.
+
+        Parameters
+        ----------
+        reactant : str
+            The reactant SMILES.
+
+        Returns
+        -------
+        list[str]
+            A list of the products of the reaction.
+        """
+        return self._react(Chem.MolFromSmiles(reactant))
 
     def __str__(self):
         return f"{self.name}: {self.reaction_smarts}"

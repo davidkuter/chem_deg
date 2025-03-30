@@ -24,3 +24,5 @@ pytest-cov==6.0.0
     # via chem-deg (../pyproject.toml)
 rdkit==2024.9.6
     # via chem-deg (../pyproject.toml)
+ruff==0.11.2
+    # via chem-deg (../pyproject.toml)
