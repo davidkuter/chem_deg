@@ -247,7 +247,7 @@ class PhosphorusEsterHydrolysis(Reaction):
         """
         Select the preferred product based electrophilicity of the carbon attached to the leaving
         group. We use GasteigerCharge partial charges as a proxy for electrophilicity.
-        
+
         This method will be used by the child classes to determine the preferred product,
         setting the `highest_electrophilicity` parameter to the required value.
 
@@ -267,10 +267,10 @@ class PhosphorusEsterHydrolysis(Reaction):
         Chem.Mol | None
             The preferred product of the reaction.
         """
-        # Compute partial charges for the reactant. 
+        # Compute partial charges for the reactant.
         charged_reactant = annotate_partial_charges(reactant)
 
-        # Set the results dictionary that stores the electrophilicity charge of the carbon attached 
+        # Set the results dictionary that stores the electrophilicity charge of the carbon attached
         # to the leaving atom as key, and product as value
         leaving_electrophilicity = {}
 
@@ -379,8 +379,29 @@ class PhosphorusEsterHydrolysisAcid(PhosphorusEsterHydrolysis):
             ]
 
 
+class CarboxylateEsterHydrolysis(Reaction):
+    """
+    Hydrolysis of carboxylate esters.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Carboxylate Ester Hydrolysis",
+            reaction_smarts="[#6:4][C:1](=[O:2])[O:3][CX4:5]>>[#6:4][C:1](=[O:2])[OH].[CX4:5][OH:3]",
+            examples={
+                # Examples from the EPA
+                "CCC(=O)OCC": "CCC(=O)O.CCO",
+                "CCCCC(CC)COC(=O)c1ccccc1C(=O)OCC(CC)CCCC": "CCCCC(CC)CO.CCCCC(CC)COC(=O)c1ccccc1C(=O)O",  # noqa: E501
+                "CC1(C)C(C(=O)OC(C#N)c2cccc(Oc3ccccc3)c2)C1(C)C": "CC1(C)C(C(=O)O)C1(C)C.N#CC(O)c1cccc(Oc2ccccc2)c1",  # noqa: E501
+                "CCOC(=O)C(O)(c1ccc(Cl)cc1)c1ccc(Cl)cc1": "CCO.O=C(O)C(O)(c1ccc(Cl)cc1)c1ccc(Cl)cc1",  # noqa: E501
+                "CC(C)=NOCCOC(=O)[C@@H](C)Oc1ccc(Oc2cnc3cc(Cl)ccc3n2)cc1": "CC(C)=NOCCO.C[C@@H](Oc1ccc(Oc2cnc3cc(Cl)ccc3n2)cc1)C(=O)O",  # noqa: E501
+                "COC(=O)CC(NC(=O)[C@@H](NC(=O)OC(C)C)C(C)C)c1ccc(Cl)cc1": "CC(C)OC(=O)N[C@H](C(=O)NC(CC(=O)O)c1ccc(Cl)cc1)C(C)C.CO",  # noqa: E501
+            },
+        )
+
+
 if __name__ == "__main__":
-    reaction_type = PhosphorusEsterHydrolysisAcid()
+    reaction_type = CarboxylateEsterHydrolysis()
     print(reaction_type.name)
     for reactant, product in reaction_type.examples.items():
         print(f"  Reactant: {Chem.MolToSmiles(Chem.MolFromSmiles(reactant))}")
