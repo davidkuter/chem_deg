@@ -4,6 +4,7 @@ determined from the schemas provided here:
 
 https://qed.epa.gov/static_qed/cts_app/docs/Hydrolysis%20Lib%20HTML/HydrolysisRxnLib_ver1-8.htm
 """
+
 from rdkit import Chem
 
 from chem_deg.reactions.base import Reaction
@@ -409,7 +410,7 @@ class LactoneHydrolysisFour(Reaction):
     def __init__(self):
         super().__init__(
             name="Lactone Hydrolysis (Four-membered ring)",
-            reaction_smarts="[C;R:3]1[C;R:4](=[O:5])[O;R;!$(O-[C;!R](=O)):1][C,N,O;R:2]1>>[OH][C:4](=[O:5])[C:3][C,N,O:2][OH:1]",
+            reaction_smarts="[C;R:3]1[C;R:4](=[O:5])[O;R;!$(O-[C;!R](=O)):1][C,N,O;R:2]~1>>[OH][C:4](=[O:5])[C:3]~[C,N,O:2][OH:1]",
             examples={
                 # Examples from the EPA
                 "CC1CC(=O)O1": "CC(O)CC(=O)O",
@@ -425,13 +426,13 @@ class LactoneHydrolysisFive(Reaction):
     def __init__(self):
         super().__init__(
             name="Lactone Hydrolysis (Five-membered ring)",
-            reaction_smarts="[#6,#7,#8;R:6]1[#6,#7,#8;R:3][#6;R:4](=[O:5])[#8;R;!$(O-[C;!R](=O)):1][#6,#7,#8:2]1>>[OH][#6:4](=[O:5])[#6,#7,#8:3][#6,#7,#8:6][#6,#7,#8:2][OH:1]",
+            reaction_smarts="[#6,#7,#8;R:6]1[#6,#7,#8;R:3][#6;R:4](=[O:5])[#8;R;!$(O-[C;!R](=O)):1][#6,#7,#8:2]~1>>[OH][#6:4](=[O:5])[#6,#7,#8:3][#6,#7,#8:6]~[#6,#7,#8:2][OH:1]",
             examples={
                 # Examples from the EPA
                 "COC1(c2cccc([N+](=O)[O-])c2)OC(=O)c2ccccc21": "COC(O)(c1ccccc-1C(=O)O)c1cccc([N+](=O)[O-])c1",  # noqa: E501
                 "Cc1ccc(C)c(SC=C2OC(=O)c3ccccc32)c1": "Cc1ccc(C)c(SC=C(O)c2ccccc-2C(=O)O)c1",
                 # This produces SyntaxWarning: invalid escape sequence '\O'
-                # We cannot convert it to raw string (r"") because when we match the normal string 
+                # We cannot convert it to raw string (r"") because when we match the normal string
                 # produced by Chem.MolToSmiles to the raw string in the tests, it doesn't match.
                 # I.e. Do not convert to raw string!
                 "COc1ccc(O/C=C2\OC(=O)c3ccccc32)cc1": "COc1ccc(O/C=C(\\O)c2ccccc-2C(=O)O)cc1",
@@ -447,20 +448,107 @@ class LactoneHydrolysisSix(Reaction):
     def __init__(self):
         super().__init__(
             name="Lactone Hydrolysis (Six-membered ring)",
-            reaction_smarts="[#6,#7,#8;R:7]1[#6,#7,#8;R:6][#6,#7,#8;R:3][#6;R:4](=[O:5])[#8;R;!$(O-[C;!R](=O)):1][#6,#7,#8;R:2]1>>[OH][#6:4](=[O:5])[#6,#7,#8:3][#6,#7,#8:6][#6,#7,#8:7][#6,#7,#8:2][OH:1]",
+            reaction_smarts="[#6,#7,#8;R:7]1[#6,#7,#8;R:6][#6,#7,#8;R:3][#6;R:4](=[O:5])[#8;R;!$(O-[C;!R](=O)):1][#6,#7,#8;R:2]~1>>[OH][#6:4](=[O:5])[#6,#7,#8:3][#6,#7,#8:6][#6,#7,#8:7]~[#6,#7,#8:2][OH:1]",
             examples={
                 # Examples from the EPA
                 "O=C1O[C@H](CO)[C@@H](O)[C@H](O)[C@H]1O": "O=C(O)[C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO",  # noqa: E501
                 # The double bond in the ring converts the carbonyl carbon and oxygen atom from
                 # aliphatic to aromatc. This can be seen in the SMILES where c1 and o1 are lower
                 # case. Compared to above where C1 and O1 are upper case.
-                "O=c1ccc2ccccc2o1": "O=C(O)c-c-c1ccccc-1O",
+                "O=c1ccc2ccccc2o1": "O=C(O)c-c-c1ccccc1O",
+            },
+        )
+
+
+class CarbonateHydrolysisAcyclic(Reaction):
+    """
+    Hydrolysis of acyclic carbonates.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Carbonate Hydrolysis (Acyclic)",
+            reaction_smarts="[C:2][O:1][#6;!R,!a](=[O])[O:3][C:4]>>[C:2][OH:1].[OH:3][C:4]",
+            examples={
+                # Examples from the EPA
+                "CCOC(=O)OC1=C(c2cc(C)ccc2C)C(=O)NC12CCC(OC)CC2": "CCO.COC1CCC2(CC1)NC(=O)C(c1cc(C)ccc1C)=C2O",  # noqa: E501
+            },
+        )
+
+
+class CarbonateHydrolysisCyclic(Reaction):
+    """
+    Hydrolysis of cyclic carbonates. Currently, only 5-membered cyclic carbonates are supported
+    since these are apparently the most common.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Carbonate Hydrolysis (Cyclic)",
+            reaction_smarts="[C;R:2]1[O;R:1][#6;R](=[O])[O;R:3][C;R:4]~1>>[OH:1][C:2]~[C:4][OH:3]",
+            examples={
+                # No EPA examples
+                "CC1COC(=O)O1": "CC(O)CO",
+            },
+        )
+
+
+class AnhydrideHydrolysisAcyclic(Reaction):
+    """
+    Hydrolysis of acyclic anhydrides.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Anhydride Hydrolysis (Acyclic)",
+            reaction_smarts="[#6:3][#6;!R:2](=[O:6])[O:1][#6;!R:4](=[O:7])[#6:5]>>[#6:3][#6:2](=[O:6])[OH:1].[OH][#6:4](=[O:7])[C:5]",
+            examples={
+                # Examples from the EPA
+                "CC(=O)OC(C)=O": "CC(=O)O.CC(=O)O",
+                "CC(C)(C)C(=O)OC(=O)C(C)(C)C": "CC(C)(C)C(=O)O.CC(C)(C)C(=O)O",
+            },
+        )
+
+
+class AnhydrideHydrolysisCyclicFive(Reaction):
+    """
+    Hydrolysis of five-membered cyclic anhydrides.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Anhydride Hydrolysis (Cyclic - Five-membered)",
+            # The ~1 in the reactant is import to allow any bond between the two carbon atoms
+            reaction_smarts="[#6;R:3]1[#6;R:2](=[#8:6])[#8;R:1][#6;R:4](=[#8:7])[#6;R:5]~1>>[OH:1]-[#6:2](=[#8:6])-[#6:3]~[#6:5]-[#6:4](=[#8:7])[OH]",
+            examples={
+                # Examples from the EPA
+                "O=C1C=CC(=O)O1": "O=C(O)C=CC(=O)O",
+                "O=C1CCC(=O)O1": "O=C(O)CCC(=O)O",
+                "CC1(C)C(=O)OC(=O)C1(C)C": "CC(C)(C(=O)O)C(C)(C)C(=O)O",
+                "Cc1ccc(C)c2c1C(=O)OC2=O": "Cc1ccc(C)c(C(=O)O)c1C(=O)O",
+            },
+        )
+
+
+class AnhydrideHydrolysisCyclicSix(Reaction):
+    """
+    Hydrolysis of six-membered cyclic anhydrides.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Anhydride Hydrolysis (Cyclic - Six-membered)",
+            # The ~1 in the reactant is import to allow any bond between the two carbon atoms
+            reaction_smarts="[#6;R:3]1[#6;R:2](=[#8:6])[#8;R:1][#6;R:4](=[#8:7])[#6;R:5][#6;R:8]~1>>[OH:1]-[#6:2](=[#8:6])-[#6:3]~[#6:8][#6:5]-[#6:4](=[#8:7])[OH]",
+            examples={
+                # Examples from the EPA
+                "O=C1CCCC(=O)O1": "O=C(O)CCCC(=O)O",
             },
         )
 
 
 if __name__ == "__main__":
-    reaction_type = LactoneHydrolysisSix()
+    reaction_type = AnhydrideHydrolysisCyclicSix()
     print(reaction_type.name)
     for reactant, product in reaction_type.examples.items():
         print(f"  Reactant: {Chem.MolToSmiles(Chem.MolFromSmiles(reactant))}")

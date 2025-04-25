@@ -14,6 +14,11 @@ from chem_deg.reactions.hydrolysis import (
     LactoneHydrolysisFour,
     LactoneHydrolysisFive,
     LactoneHydrolysisSix,
+    CarbonateHydrolysisAcyclic,
+    CarbonateHydrolysisCyclic,
+    AnhydrideHydrolysisAcyclic,
+    AnhydrideHydrolysisCyclicFive,
+    AnhydrideHydrolysisCyclicSix,
 )
 
 
@@ -30,6 +35,11 @@ from chem_deg.reactions.hydrolysis import (
         LactoneHydrolysisFour(),
         LactoneHydrolysisFive(),
         LactoneHydrolysisSix(),
+        CarbonateHydrolysisAcyclic(),
+        CarbonateHydrolysisCyclic(),
+        AnhydrideHydrolysisAcyclic(),
+        AnhydrideHydrolysisCyclicFive(),
+        AnhydrideHydrolysisCyclicSix(),
     ],
 )
 def test_hydrolysis(reaction: Reaction):
