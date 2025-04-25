@@ -19,27 +19,29 @@ from chem_deg.reactions.hydrolysis import (
     AnhydrideHydrolysisAcyclic,
     AnhydrideHydrolysisCyclicFive,
     AnhydrideHydrolysisCyclicSix,
+    AmideHydrolysis,
 )
 
 
 @pytest.mark.parametrize(
     "reaction",
     [
-        HalogenatedAliphaticsSubstitutionA(),
-        HalogenatedAliphaticsSubstitutionC(),
-        HalogenatedAliphaticsElimination(),
-        EpoxideHydrolysis(),
-        PhosphorusEsterHydrolysisAcid(),
-        PhosphorusEsterHydrolysisBase(),
-        CarboxylateEsterHydrolysis(),
-        LactoneHydrolysisFour(),
-        LactoneHydrolysisFive(),
-        LactoneHydrolysisSix(),
-        CarbonateHydrolysisAcyclic(),
-        CarbonateHydrolysisCyclic(),
-        AnhydrideHydrolysisAcyclic(),
-        AnhydrideHydrolysisCyclicFive(),
-        AnhydrideHydrolysisCyclicSix(),
+        HalogenatedAliphaticsSubstitutionA(),  # 0
+        HalogenatedAliphaticsSubstitutionC(),  # 1
+        HalogenatedAliphaticsElimination(),  # 2
+        EpoxideHydrolysis(),  # 3
+        PhosphorusEsterHydrolysisAcid(),  # 4
+        PhosphorusEsterHydrolysisBase(),  # 5
+        CarboxylateEsterHydrolysis(),  # 6
+        LactoneHydrolysisFour(),  # 7
+        LactoneHydrolysisFive(),  # 8
+        LactoneHydrolysisSix(),  # 9
+        CarbonateHydrolysisAcyclic(),  # 10
+        CarbonateHydrolysisCyclic(),  # 11
+        AnhydrideHydrolysisAcyclic(),  # 12
+        AnhydrideHydrolysisCyclicFive(),  # 13
+        AnhydrideHydrolysisCyclicSix(),  # 14
+        AmideHydrolysis(),  # 15
     ],
 )
 def test_hydrolysis(reaction: Reaction):

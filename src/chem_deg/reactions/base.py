@@ -39,6 +39,11 @@ class Reaction:
         if isinstance(mol, str):
             mol = Chem.MolFromSmiles(mol)
 
+        # ToDo: This might be useful but causes issues later on when we strip hydrogens
+        # Try add hydrogens to the molecule. We need to this to add explicit hydrogens to the 
+        # molecule for reactions to work.
+        # mol = Chem.AddHs(mol)
+
         # Run the reaction
         products = self._rxn.RunReactants((mol,))
         if not products:
@@ -57,6 +62,13 @@ class Reaction:
             else:
                 product = Chem.CombineMols(*product_tuple)
 
+            # ToDo: This is needed if we add hydrogen to the molecule but I got some failures with
+            # tests because non-ring atoms where assigned as aromatic. We'd need to do some serious
+            # error handling here to make it work. For the time being, I am not doing it.
+            # Remove hydrogens from the product
+            # print(Chem.MolToSmiles(product))
+            # product = Chem.RemoveHs(product)
+
             # Convert to SMILES to check for duplicates
             product_smiles = Chem.MolToSmiles(product)
             if product_smiles not in unique_products:
@@ -65,10 +77,10 @@ class Reaction:
 
         return valid_products
 
-    def react(self, reactant: str) -> list[str] | None:
+    def react(self, reactant: str) -> list[Chem.Mol] | None:
         """
-        Entry point for the reaction. Some reactions may need to override this method to handle 
-        specific cases. This would mostly occur when there is a preferential product formation over 
+        Entry point for the reaction. Some reactions may need to override this method to handle
+        specific cases. This would mostly occur when there is a preferential product formation over
         others.
 
         Parameters
@@ -78,8 +90,8 @@ class Reaction:
 
         Returns
         -------
-        list[str]
-            A list of the products of the reaction.
+        list[Chem.Mol] | None
+            A list of the products of the reaction as rdkit Mol objects.
         """
         return self._react(Chem.MolFromSmiles(reactant))
 

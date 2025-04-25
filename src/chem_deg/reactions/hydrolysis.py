@@ -547,8 +547,30 @@ class AnhydrideHydrolysisCyclicSix(Reaction):
         )
 
 
+class AmideHydrolysis(Reaction):
+    """
+    Hydrolysis of amides.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Amide Hydrolysis",
+            # [H;C;N] attached to [#7:4] is not specified because that would require an explicit
+            # H atom to be present in the SMILES. I tried addingHs to the molecule but that caused
+            # issues with other reactions so for now we will leave it out.
+            reaction_smarts="[#6:3][#6:1](=[#8:2])[#7:4]>>[#6:3][#6:1](=[#8:2])[OH].[#7:4]",
+            examples={
+                # Examples from the EPA
+                "CCNC(=O)[C@@H](C)OC(=O)Nc1ccccc1": "CCN.C[C@@H](OC(=O)Nc1ccccc1)C(=O)O",
+                "C#CC(C)(C)NC(=O)c1cc(Cl)cc(Cl)c1": "C#CC(C)(C)N.O=C(O)c1cc(Cl)cc(Cl)c1",
+                "CCC(=O)Nc1ccc(Cl)c(Cl)c1": "CCC(=O)O.Nc1ccc(Cl)c(Cl)c1",
+                "O=C(NC(=O)c1c(F)cccc1F)Nc1ccc(Cl)cc1": "NC(=O)Nc1ccc(Cl)cc1.O=C(O)c1c(F)cccc1F",
+            },
+        )
+
+
 if __name__ == "__main__":
-    reaction_type = AnhydrideHydrolysisCyclicSix()
+    reaction_type = AmideHydrolysis()
     print(reaction_type.name)
     for reactant, product in reaction_type.examples.items():
         print(f"  Reactant: {Chem.MolToSmiles(Chem.MolFromSmiles(reactant))}")
