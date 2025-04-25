@@ -10,7 +10,10 @@ from chem_deg.reactions.hydrolysis import (
     EpoxideHydrolysis,
     PhosphorusEsterHydrolysisAcid,
     PhosphorusEsterHydrolysisBase,
-    CarboxylateEsterHydrolysis
+    CarboxylateEsterHydrolysis,
+    LactoneHydrolysisFour,
+    LactoneHydrolysisFive,
+    LactoneHydrolysisSix,
 )
 
 
@@ -24,6 +27,9 @@ from chem_deg.reactions.hydrolysis import (
         PhosphorusEsterHydrolysisAcid(),
         PhosphorusEsterHydrolysisBase(),
         CarboxylateEsterHydrolysis(),
+        LactoneHydrolysisFour(),
+        LactoneHydrolysisFive(),
+        LactoneHydrolysisSix(),
     ],
 )
 def test_hydrolysis(reaction: Reaction):
