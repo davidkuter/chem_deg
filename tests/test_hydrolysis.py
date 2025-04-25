@@ -20,6 +20,9 @@ from chem_deg.reactions.hydrolysis import (
     AnhydrideHydrolysisCyclicFive,
     AnhydrideHydrolysisCyclicSix,
     AmideHydrolysis,
+    LactamHydrolysisFour,
+    LactamHydrolysisFive,
+    LactamHydrolysisSix,
 )
 
 
@@ -42,6 +45,9 @@ from chem_deg.reactions.hydrolysis import (
         AnhydrideHydrolysisCyclicFive(),  # 13
         AnhydrideHydrolysisCyclicSix(),  # 14
         AmideHydrolysis(),  # 15
+        LactamHydrolysisFour(),  # 16
+        LactamHydrolysisFive(),  # 17
+        LactamHydrolysisSix(),  # 18
     ],
 )
 def test_hydrolysis(reaction: Reaction):
