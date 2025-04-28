@@ -3,7 +3,7 @@ import pytest
 from rdkit import Chem
 
 from chem_deg.reactions.base import Reaction
-from chem_deg.reactions.hydrolysis import (
+from chem_deg.reactions import (
     HalogenatedAliphaticsSubstitutionA,
     HalogenatedAliphaticsSubstitutionC,
     HalogenatedAliphaticsElimination,
@@ -23,6 +23,8 @@ from chem_deg.reactions.hydrolysis import (
     LactamHydrolysisFour,
     LactamHydrolysisFive,
     LactamHydrolysisSix,
+    CarbamateHydrolysis,
+    ThiocarbamateHydrolysis,
 )
 
 
@@ -48,6 +50,8 @@ from chem_deg.reactions.hydrolysis import (
         LactamHydrolysisFour(),  # 16
         LactamHydrolysisFive(),  # 17
         LactamHydrolysisSix(),  # 18
+        CarbamateHydrolysis(),  # 19
+        ThiocarbamateHydrolysis(),  # 20
     ],
 )
 def test_hydrolysis(reaction: Reaction):
