@@ -1,5 +1,6 @@
 from rdkit import Chem
 
+from chem_deg.halflife import HALFLIFE1, HALFLIFE2, HALFLIFE3
 from chem_deg.reactions.base import Reaction
 
 
@@ -14,6 +15,9 @@ class HalogenatedAliphaticsSubstitutionA(Reaction):
                 # Example to test reaction occurs only on the terminal halogen
                 "ClCCC(Cl)(Cl)Cl": "OCCC(Cl)(Cl)Cl",
             },
+            halflife5=HALFLIFE3,
+            halflife7=HALFLIFE3,
+            halflife9=HALFLIFE3,
         )
 
 
@@ -28,6 +32,9 @@ class HalogenatedAliphaticsSubstitutionC(Reaction):
                 # Example to test reaction occurs only on the Chlorine atom
                 "CC(C)(F)Cl": "CC(C)(O)F",
             },
+            halflife5=HALFLIFE1,
+            halflife7=HALFLIFE1,
+            halflife9=HALFLIFE1,
         )
 
 
@@ -46,6 +53,9 @@ class HalogenatedAliphaticsElimination(Reaction):
                 "C(C(Cl)Cl)(Cl)Cl": "ClC=C(Cl)Cl",
                 "C(CBr)(CCl)Br": "C=C(Br)CCl",
             },
+            halflife5=HALFLIFE1,
+            halflife7=HALFLIFE1,
+            halflife9=HALFLIFE2,
         )
 
     def _select_preferred_product(

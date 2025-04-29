@@ -1,3 +1,4 @@
+from chem_deg.halflife import HALFLIFE2, HALFLIFE3
 from chem_deg.reactions.base import Reaction
 
 
@@ -20,6 +21,9 @@ class UreaHydrolysisAcyclic(Reaction):
                 "CC(C)c1ccc(NC(=O)N(C)C)cc1": "CC(C)c1ccc([NH])cc1.CNC",
                 "O=C(Nc1ccccc1)N(Cc1ccc(Cl)cc1)C1CCCC1": "Clc1ccc(CNC2CCCC2)cc1.[NH]c1ccccc1",
             },
+            halflife5=HALFLIFE3,
+            halflife7=HALFLIFE2,
+            halflife9=HALFLIFE2,
         )
 
 
@@ -40,6 +44,9 @@ class UreaHydrolysisCyclicFive(Reaction):
                 # No examples from the EPA
                 "O=C1NC(=O)C(c2ccccc2)(c2ccccc2)N1": "[NH]C(=O)C([NH])(c1ccccc1)c1ccccc1",
             },
+            halflife5=HALFLIFE3,
+            halflife7=HALFLIFE2,
+            halflife9=HALFLIFE2,
         )
 
 
@@ -60,6 +67,9 @@ class UreaHydrolysisCyclicSix(Reaction):
                 # No examples from the EPA
                 "CCC1(c2ccccc2)C(=O)NC(=O)NC1=O": "CCC(C([NH])=O)(C([NH])=O)c1ccccc1",
             },
+            halflife5=HALFLIFE3,
+            halflife7=HALFLIFE2,
+            halflife9=HALFLIFE2,
         )
 
 
@@ -81,4 +91,7 @@ class SulfonylureaHydrolysis(Reaction):
                 "COC(=O)c1csc(C)c1S(=O)(=O)NC(=O)n1nc(OC)n(C)c1=O": "COC(=O)c1csc(C)c1S(N)(=O)=O.COc1n-[nH]c(=O)n1C",  # noqa: E501
                 "COc1cc(OC)nc(NC(=O)NS(=O)(=O)N(C)S(C)(=O)=O)n1": "CN(S(C)(=O)=O)S(N)(=O)=O.COc1cc(OC)nc([NH])n1",  # noqa: E501
             },
+            halflife5=HALFLIFE3,
+            halflife7=HALFLIFE2,
+            halflife9=HALFLIFE2,
         )

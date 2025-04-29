@@ -7,6 +7,7 @@ https://qed.epa.gov/static_qed/cts_app/docs/Hydrolysis%20Lib%20HTML/HydrolysisRx
 
 from rdkit import Chem
 
+from chem_deg.halflife import HALFLIFE1, HALFLIFE3, HALFLIFE4, HALFLIFE5, HALFLIFE6, HALFLIFE7
 from chem_deg.reactions.base import Reaction
 
 
@@ -22,6 +23,9 @@ class EpoxideHydrolysis(Reaction):
                 "ClC1=C(Cl)C2(Cl)C3C4CC(C5OC45)C3C1(Cl)C2(Cl)Cl": "OC1C(O)C2CC1C1C2C2(Cl)C(Cl)=C(Cl)C1(Cl)C2(Cl)Cl",  # noqa: E501
                 "c1ccc2c(c1)CCC1OC21": "OC1CCc2ccccc2C1O",
             },
+            halflife5=HALFLIFE7,
+            halflife7=HALFLIFE5,
+            halflife9=HALFLIFE1,
         )
 
 
@@ -44,6 +48,9 @@ class AmideHydrolysis(Reaction):
                 "CCC(=O)Nc1ccc(Cl)c(Cl)c1": "CCC(=O)O.Nc1ccc(Cl)c(Cl)c1",
                 "O=C(NC(=O)c1c(F)cccc1F)Nc1ccc(Cl)cc1": "NC(=O)Nc1ccc(Cl)cc1.O=C(O)c1c(F)cccc1F",
             },
+            halflife5=HALFLIFE1,
+            halflife7=HALFLIFE1,
+            halflife9=HALFLIFE3,
         )
 
 
@@ -64,6 +71,9 @@ class NitrileHydrolysis(Reaction):
                 "N#CNC#N": "N#CNC(N)=O",
                 "N#Cc1nn(-c2c(Cl)cc(C(F)(F)F)cc2Cl)c(N)c1S(=O)C(F)(F)F": "NC(=O)c1nn(-c2c(Cl)cc(C(F)(F)F)cc2Cl)c(N)c1S(=O)C(F)(F)F",  # noqa: E501
             },
+            halflife5=HALFLIFE4,
+            halflife7=HALFLIFE5,
+            halflife9=HALFLIFE6,
         )
 
 
@@ -85,6 +95,9 @@ class NSHydrolysis(Reaction):
                 "O=C1C2CC=CCC2C(=O)N1SC(Cl)(Cl)Cl": "O=C1NC(=O)C2CC=CCC12.OSC(Cl)(Cl)Cl",
                 "O=C1c2ccccc2C(=O)N1SC(Cl)(Cl)Cl": "O=C1NC(=O)c2ccccc21.OSC(Cl)(Cl)Cl",
             },
+            halflife5=HALFLIFE5,
+            halflife7=HALFLIFE5,
+            halflife9=HALFLIFE5,
         )
 
 
@@ -107,6 +120,9 @@ class AcidHalideHydrolysis(Reaction):
                 "O=C(Cl)c1ccccc1": "O=C(O)c1ccccc1",
                 "O=C(F)c1cccc(Cl)c1": "O=C(O)c1cccc(Cl)c1",
             },
+            halflife5=HALFLIFE7,
+            halflife7=HALFLIFE7,
+            halflife9=HALFLIFE7,
         )
 
 

@@ -1,3 +1,4 @@
+from chem_deg.halflife import HALFLIFE2, HALFLIFE5
 from chem_deg.reactions.base import Reaction
 
 
@@ -16,6 +17,9 @@ class ImideHydrolysisFive(Reaction):
                 "O=C(O)c1ccccc1N1C(=O)c2ccccc2C1=O": "O=C(O)c1ccccc1NC(=O)c1ccccc1C(=O)O",
                 "C=CC1(C)OC(=O)N(c2cc(Cl)cc(Cl)c2)C1=O": "C=CC(C)(OC(=O)Nc1cc(Cl)cc(Cl)c1)C(=O)O",
             },
+            halflife5=HALFLIFE2,
+            halflife7=HALFLIFE5,
+            halflife9=HALFLIFE5,
         )
 
 
@@ -32,4 +36,7 @@ class ImideHydrolysisSix(Reaction):
                 # Examples from the EPA
                 "O=C1c2cccc3cccc(c23)C(=O)N1c1ccccc1": "O=C(Nc1ccccc1)c1cccc2cccc(C(=O)O)c2-1",
             },
+            halflife5=HALFLIFE2,
+            halflife7=HALFLIFE5,
+            halflife9=HALFLIFE5,
         )

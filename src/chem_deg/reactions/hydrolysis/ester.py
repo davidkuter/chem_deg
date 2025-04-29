@@ -1,5 +1,6 @@
 from rdkit import Chem
 
+from chem_deg.halflife import HalfLife, HALFLIFE2, HALFLIFE3, HALFLIFE4, HALFLIFE5
 from chem_deg.reactions.base import Reaction
 from chem_deg.util import annotate_partial_charges
 
@@ -11,12 +12,15 @@ class PhosphorusEsterHydrolysis(Reaction):
     base- and acid-catalysed hydrolysis.
     """
 
-    def __init__(self):
+    def __init__(self, halflife5: HalfLife, halflife7: HalfLife, halflife9: HalfLife):
         super().__init__(
             name="Phosphorus Ester Hydrolysis",
             reaction_smarts="[P:1](=[O,S:2])([N,O,S:5])([N,O,S:6])[N,O,S:3]-[#6:4]>>[P:1](=[O,S:2])([N,O,S:5])([N,O,S:6])[OH].[N,O,S:3]-[#6:4]",
             # Intentionally left blank for child classes to fill in
             examples={},
+            halflife5=halflife5,
+            halflife7=halflife7,
+            halflife9=halflife9,
         )
 
     @staticmethod
@@ -166,7 +170,7 @@ class PhosphorusEsterHydrolysisBase(PhosphorusEsterHydrolysis):
     """
 
     def __init__(self):
-        super().__init__()
+        super().__init__(halflife5=HALFLIFE2, halflife7=HALFLIFE3, halflife9=HALFLIFE4)
         self.name = self.name + " (Base-catalysed)"
         self.examples = {
             # Examples from the EPA
@@ -201,7 +205,7 @@ class PhosphorusEsterHydrolysisAcid(PhosphorusEsterHydrolysis):
     """
 
     def __init__(self):
-        super().__init__()
+        super().__init__(halflife5=HALFLIFE2, halflife7=HALFLIFE3, halflife9=HALFLIFE3)
         self.name = self.name + " (Acid-catalysed)"
         self.examples = {
             # Examples from the EPA
@@ -249,4 +253,7 @@ class CarboxylateEsterHydrolysis(Reaction):
                 "CC(C)=NOCCOC(=O)[C@@H](C)Oc1ccc(Oc2cnc3cc(Cl)ccc3n2)cc1": "CC(C)=NOCCO.C[C@@H](Oc1ccc(Oc2cnc3cc(Cl)ccc3n2)cc1)C(=O)O",  # noqa: E501
                 "COC(=O)CC(NC(=O)[C@@H](NC(=O)OC(C)C)C(C)C)c1ccc(Cl)cc1": "CC(C)OC(=O)N[C@H](C(=O)NC(CC(=O)O)c1ccc(Cl)cc1)C(C)C.CO",  # noqa: E501
             },
+            halflife5=HALFLIFE2,
+            halflife7=HALFLIFE2,
+            halflife9=HALFLIFE5,
         )

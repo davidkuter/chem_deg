@@ -1,3 +1,4 @@
+from chem_deg.halflife import HALFLIFE1, HALFLIFE5
 from chem_deg.reactions.base import Reaction
 
 
@@ -14,6 +15,9 @@ class LactoneHydrolysisFour(Reaction):
                 # Examples from the EPA
                 "CC1CC(=O)O1": "CC(O)CC(=O)O",
             },
+            halflife5=HALFLIFE1,
+            halflife7=HALFLIFE5,
+            halflife9=HALFLIFE5,
         )
 
 
@@ -36,6 +40,9 @@ class LactoneHydrolysisFive(Reaction):
                 # I.e. Do not convert to raw string!
                 "COc1ccc(O/C=C2\OC(=O)c3ccccc32)cc1": "COc1ccc(O/C=C(\\O)c2ccccc-2C(=O)O)cc1",
             },
+            halflife5=HALFLIFE1,
+            halflife7=HALFLIFE5,
+            halflife9=HALFLIFE5,
         )
 
 
@@ -56,4 +63,7 @@ class LactoneHydrolysisSix(Reaction):
                 # case. Compared to above where C1 and O1 are upper case.
                 "O=c1ccc2ccccc2o1": "O=C(O)c-c-c1ccccc1O",
             },
+            halflife5=HALFLIFE1,
+            halflife7=HALFLIFE5,
+            halflife9=HALFLIFE5,
         )

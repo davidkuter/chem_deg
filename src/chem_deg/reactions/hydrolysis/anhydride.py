@@ -1,3 +1,4 @@
+from chem_deg.halflife import HALFLIFE7
 from chem_deg.reactions.base import Reaction
 
 
@@ -15,6 +16,9 @@ class AnhydrideHydrolysisAcyclic(Reaction):
                 "CC(=O)OC(C)=O": "CC(=O)O.CC(=O)O",
                 "CC(C)(C)C(=O)OC(=O)C(C)(C)C": "CC(C)(C)C(=O)O.CC(C)(C)C(=O)O",
             },
+            halflife5=HALFLIFE7,
+            halflife7=HALFLIFE7,
+            halflife9=HALFLIFE7,
         )
 
 
@@ -35,6 +39,9 @@ class AnhydrideHydrolysisCyclicFive(Reaction):
                 "CC1(C)C(=O)OC(=O)C1(C)C": "CC(C)(C(=O)O)C(C)(C)C(=O)O",
                 "Cc1ccc(C)c2c1C(=O)OC2=O": "Cc1ccc(C)c(C(=O)O)c1C(=O)O",
             },
+            halflife5=HALFLIFE7,
+            halflife7=HALFLIFE7,
+            halflife9=HALFLIFE7,
         )
 
 
@@ -52,4 +59,7 @@ class AnhydrideHydrolysisCyclicSix(Reaction):
                 # Examples from the EPA
                 "O=C1CCCC(=O)O1": "O=C(O)CCCC(=O)O",
             },
+            halflife5=HALFLIFE7,
+            halflife7=HALFLIFE7,
+            halflife9=HALFLIFE7,
         )

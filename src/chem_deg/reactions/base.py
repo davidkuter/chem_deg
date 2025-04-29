@@ -1,9 +1,19 @@
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
+from chem_deg.halflife import HalfLife
+
 
 class Reaction:
-    def __init__(self, name: str, reaction_smarts: str, examples: dict[str, str] = None):
+    def __init__(
+        self,
+        name: str,
+        reaction_smarts: str,
+        examples: dict[str, str] = None,
+        halflife5: HalfLife = None,
+        halflife7: HalfLife = None,
+        halflife9: HalfLife = None,
+    ):
         """
         Initialize a reaction with a name, reactant SMARTS, and reaction SMARTS.
 
@@ -21,6 +31,9 @@ class Reaction:
         self.reaction_smarts = reaction_smarts
         self.examples = examples or {}
         self._rxn = AllChem.ReactionFromSmarts(self.reaction_smarts)
+
+        # Halflife
+        self.halflife = {5: halflife5, 7: halflife7, 9: halflife9}
 
     def _react(self, mol: Chem.Mol | str) -> list[Chem.Mol] | None:
         """
@@ -137,7 +150,9 @@ class ReactionClass:
         mol = Chem.MolFromSmiles(smiles)
         return Chem.MolToSmiles(mol)
 
-    def react(self, reactant: str, return_mol: bool = False) -> dict[str, list[str | Chem.Mol]]:
+    def react(
+        self, reactant: str, return_mol: bool = False
+    ) -> dict[Reaction, list[str | Chem.Mol]]:
         """
         React a molecule with all reactions in the reaction class.
 
@@ -151,8 +166,8 @@ class ReactionClass:
 
         Returns
         -------
-        dict[str, list[str | Chem.Mol]]
-            A dictionary of the products of the reaction. The keys are the reaction names and the
+        dict[Reaction, list[Reaction | Chem.Mol]]
+            A dictionary of the products of the reaction. The keys are the reaction objects and the
             values are the product SMILES or Mol objects.
         """
         # React the reactant with all reactions in the reaction class
@@ -165,7 +180,7 @@ class ReactionClass:
         # Convert products to SMILES if return_mol is False
         if return_mol is False:
             products = {
-                reaction.name: [self._cleaned_smiles(Chem.MolToSmiles(p)) for p in product]
+                reaction: [self._cleaned_smiles(Chem.MolToSmiles(p)) for p in product]
                 for reaction, product in products.items()
             }
         return products

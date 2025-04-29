@@ -1,3 +1,4 @@
+from chem_deg.halflife import HALFLIFE1, HALFLIFE3, HALFLIFE5
 from chem_deg.reactions.base import Reaction
 
 
@@ -14,6 +15,9 @@ class CarbonateHydrolysisAcyclic(Reaction):
                 # Examples from the EPA
                 "CCOC(=O)OC1=C(c2cc(C)ccc2C)C(=O)NC12CCC(OC)CC2": "CCO.COC1CCC2(CC1)NC(=O)C(c1cc(C)ccc1C)=C2O",  # noqa: E501
             },
+            halflife5=HALFLIFE1,
+            halflife7=HALFLIFE3,
+            halflife9=HALFLIFE5,
         )
 
 
@@ -31,4 +35,7 @@ class CarbonateHydrolysisCyclic(Reaction):
                 # No EPA examples
                 "CC1COC(=O)O1": "CC(O)CO",
             },
+            halflife5=HALFLIFE1,
+            halflife7=HALFLIFE3,
+            halflife9=HALFLIFE5,
         )

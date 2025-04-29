@@ -1,3 +1,4 @@
+from chem_deg.halflife import HALFLIFE1, HALFLIFE3, HALFLIFE5
 from chem_deg.reactions.base import Reaction
 
 
@@ -16,6 +17,9 @@ class CarbamateHydrolysis(Reaction):
                 "CNC(=O)Oc1cccc2ccccc12": "CN.Oc1cccc2ccccc12",
                 "CCNC(=O)[C@@H](C)OC(=O)Nc1ccccc1": "CCNC(=O)[C@@H](C)O.Nc1ccccc1",
             },
+            halflife5=HALFLIFE3,
+            halflife7=HALFLIFE3,
+            halflife9=HALFLIFE5,
         )
 
 
@@ -35,4 +39,7 @@ class ThiocarbamateHydrolysis(Reaction):
                 # Examples from the EPA
                 "CC(C)N(C(=O)SC/C(Cl)=C/Cl)C(C)C": "CC(C)NC(C)C.SC/C(Cl)=C/Cl",
             },
+            halflife5=HALFLIFE1,
+            halflife7=HALFLIFE1,
+            halflife9=HALFLIFE1,
         )
