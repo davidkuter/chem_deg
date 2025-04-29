@@ -28,14 +28,14 @@ testpaths = [
     "tests",
 ]
 
+[tool.ruff.lint]
+# Enable the pycodestyle (`E`) and Pyflakes (`F`) rules by default
+select = ["E", "F"]
+
 [tool.ruff]
 # Set maximum line length
 line-length = 100  # Change this number to your preferred length
 
-# Enable autofix behavior on save
-fix = true
-# Enable the pycodestyle (`E`) and Pyflakes (`F`) rules by default
-select = ["E", "F"]
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",

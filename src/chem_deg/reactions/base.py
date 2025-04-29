@@ -14,7 +14,7 @@ class Reaction:
         reaction_smarts : str
             The reaction SMARTS of the reaction.
         examples : dict[str, str]
-            A dictionary of examples of the reaction. The keys and values are the reactant and 
+            A dictionary of examples of the reaction. The keys and values are the reactant and
             product SMILES respectively.
         """
         self.name = name
@@ -40,7 +40,7 @@ class Reaction:
             mol = Chem.MolFromSmiles(mol)
 
         # ToDo: This might be useful but causes issues later on when we strip hydrogens
-        # Try add hydrogens to the molecule. We need to this to add explicit hydrogens to the 
+        # Try add hydrogens to the molecule. We need to this to add explicit hydrogens to the
         # molecule for reactions to work.
         # mol = Chem.AddHs(mol)
 
@@ -103,3 +103,69 @@ class Reaction:
 
     def __str__(self):
         return f"{self.name}: {self.reaction_smarts}"
+
+
+class ReactionClass:
+    def __init__(self, name: str, reactions: list[Reaction]):
+        """
+        Initialize a reaction class with a name and a list of reactions.
+
+        Parameters
+        ----------
+        name : str
+            The name of the reaction class.
+        reactions : list[Reaction]
+            A list of reactions in the reaction class.
+        """
+        self.name = name
+        self.reactions = reactions
+
+    def _cleaned_smiles(self, smiles) -> str:
+        """
+        Clean the SMILES string by removing any unwanted characters.
+
+        Parameters
+        ----------
+        smiles : str
+            The SMILES string to clean.
+
+        Returns
+        -------
+        str
+            The cleaned SMILES string.
+        """
+        mol = Chem.MolFromSmiles(smiles)
+        return Chem.MolToSmiles(mol)
+
+    def react(self, reactant: str, return_mol: bool = False) -> dict[str, list[str | Chem.Mol]]:
+        """
+        React a molecule with all reactions in the reaction class.
+
+        Parameters
+        ----------
+        reactant : str
+            The reactant SMILES.
+        return_mol : bool, optional
+            If True, return the products as rdkit Mol objects. If False, return the products as
+            SMILES strings. The default is False.
+
+        Returns
+        -------
+        dict[str, list[str | Chem.Mol]]
+            A dictionary of the products of the reaction. The keys are the reaction names and the
+            values are the product SMILES or Mol objects.
+        """
+        # React the reactant with all reactions in the reaction class
+        products = {}
+        for reaction in self.reactions:
+            product = reaction.react(reactant)
+            if product:
+                products[reaction.name] = product
+
+        # Convert products to SMILES if return_mol is False
+        if return_mol is False:
+            products = {
+                reaction.name: [self._cleaned_smiles(Chem.MolToSmiles(p)) for p in product]
+                for reaction, product in products.items()
+            }
+        return products
