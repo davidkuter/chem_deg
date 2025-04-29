@@ -33,6 +33,7 @@ from chem_deg.reactions import (
     NSHydrolysis,
     ImideHydrolysisFive,
     ImideHydrolysisSix,
+    AcidHalideHydrolysis,
 )
 
 
@@ -68,6 +69,7 @@ from chem_deg.reactions import (
         NSHydrolysis(),  # 26
         ImideHydrolysisFive(),  # 27
         ImideHydrolysisSix(),  # 28
+        AcidHalideHydrolysis(),  # 29
     ],
 )
 def test_hydrolysis(reaction: Reaction):

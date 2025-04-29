@@ -810,9 +810,31 @@ class ImideHydrolysisSix(Reaction):
         )
 
 
+class AcidHalideHydrolysis(Reaction):
+    """
+    Hydrolysis of acid halides.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Acid Halidee Hydrolysis",
+            reaction_smarts="[#6:2](=[#8:3])[F,Cl,Br,I]>>[#6:2](=[#8:3])[OH]",
+            examples={
+                # Examples from the EPA
+                "O=CCl": "O=CO",
+                "CC(=O)Cl": "CC(=O)O",
+                "CC(C)OC(=O)Cl": "CC(C)OC(=O)O",
+                "CSC(=O)Cl": "CSC(=O)O",
+                "O=C(Cl)Cl": "O=C(O)Cl",
+                "O=C(Cl)c1ccccc1": "O=C(O)c1ccccc1",
+                "O=C(F)c1cccc(Cl)c1": "O=C(O)c1cccc(Cl)c1",
+            },
+        )
+
+
 
 if __name__ == "__main__":
-    reaction_type = ImideHydrolysisSix()
+    reaction_type = AcidHalideHydrolysis()
     print(reaction_type.name)
     for reactant, product in reaction_type.examples.items():
         print(f"  Reactant: {Chem.MolToSmiles(Chem.MolFromSmiles(reactant))}")

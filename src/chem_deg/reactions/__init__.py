@@ -28,6 +28,7 @@ from chem_deg.reactions.hydrolysis import (
     NSHydrolysis,
     ImideHydrolysisFive,
     ImideHydrolysisSix,
+    AcidHalideHydrolysis,
 )
 
 
@@ -61,4 +62,5 @@ __all__ = [
     "NSHydrolysis",
     "ImideHydrolysisFive",
     "ImideHydrolysisSix",
+    "AcidHalideHydrolysis",
 ]
