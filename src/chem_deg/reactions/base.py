@@ -71,6 +71,12 @@ class Reaction:
 
             # Convert to SMILES to check for duplicates
             product_smiles = Chem.MolToSmiles(product)
+
+            # Sometimes SMILES contain "-" which indicates single bonds. E.g.
+            # "COc1n-[nH]c(=O)n1C" vs "COc1n[nH]-c(=O)n1C" are the same but have different SMILES
+            # To account for this, we strip "-" from the SMILES because single bonds are implied.
+            product_smiles = product_smiles.replace("-", "")
+
             if product_smiles not in unique_products:
                 unique_products.add(product_smiles)
                 valid_products.append(product)

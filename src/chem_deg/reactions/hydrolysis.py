@@ -716,8 +716,48 @@ class UreaHydrolysisCyclicSix(Reaction):
         )
 
 
+class SulfonylureaHydrolysis(Reaction):
+    """
+    Hydrolysis of sulfonylureas.
+    """
+    def __init__(self):
+        super().__init__(
+            name="Sulfonylurea Hydrolysis",
+            reaction_smarts="[#6,#7:3][S:2](=[O])(=[O])[NH:1][C](=[O])[N,n:4][#6,#7:5]>>[#6,#7:3][S:2](=[O])(=[O])[NH2:1].[NH,nh:4][#6,#7:5]",
+            examples={
+                # Examples from the EPA
+                "COC(=O)c1ccccc1S(=O)(=O)NC(=O)Nc1nc(C)nc(OC)n1 ": "COC(=O)c1ccccc1S(N)(=O)=O.COc1nc(C)nc([NH])n1",  # noqa: E501
+                "COC(=O)c1c(Cl)nn(C)c1S(=O)(=O)NC(=O)Nc1nc(OC)cc(OC)n1": "COC(=O)c1c(Cl)nn(C)c1S(N)(=O)=O.COc1cc(OC)nc([NH])n1",  # noqa: E501
+                "COC(=O)c1cccc(C)c1S(=O)(=O)NC(=O)Nc1nc(OCC(F)(F)F)nc(N(C)C)n1": "CN(C)c1nc([NH])nc(OCC(F)(F)F)n1.COC(=O)c1cccc(C)c1S(N)(=O)=O",  # noqa: E501
+                "CCS(=O)(=O)c1cccnc1S(=O)(=O)NC(=O)Nc1nc(OC)cc(OC)n1": "CCS(=O)(=O)c1cccnc1S(N)(=O)=O.COc1cc(OC)nc([NH])n1",  # noqa: E501
+                "COC(=O)c1csc(C)c1S(=O)(=O)NC(=O)n1nc(OC)n(C)c1=O": "COC(=O)c1csc(C)c1S(N)(=O)=O.COc1n-[nH]c(=O)n1C",  # noqa: E501
+                "COc1cc(OC)nc(NC(=O)NS(=O)(=O)N(C)S(C)(=O)=O)n1": "CN(S(C)(=O)=O)S(N)(=O)=O.COc1cc(OC)nc([NH])n1",  # noqa: E501
+            },
+        )
+
+
+class NitrileHydrolysis(Reaction):
+    """
+    Hydrolysis of nitriles.
+    """
+    def __init__(self):
+        super().__init__(
+            name="Nitrile Hydrolysis",
+            reaction_smarts="[C:2](#[N:1])[#6,#7:3]>>[NH2:1][C:2](=[O])[#6,#7:3]",
+            examples={
+                # Examples from the EPA
+                "CC#N": "CC(N)=O",
+                "N#Cc1ccccc1": "NC(=O)c1ccccc1",
+                "N#CC(Cl)(Cl)Cl": "NC(=O)C(Cl)(Cl)Cl",
+                "N#CNC#N": "N#CNC(N)=O",
+                "N#Cc1nn(-c2c(Cl)cc(C(F)(F)F)cc2Cl)c(N)c1S(=O)C(F)(F)F": "N#Cc1nn(-c2c(Cl)cc(C(F)(F)F)cc2Cl)c(N)c1S(=O)C(F)(F)F",  # noqa: E501
+            },
+        )
+
+
+
 if __name__ == "__main__":
-    reaction_type = UreaHydrolysisCyclicSix()
+    reaction_type = NitrileHydrolysis()
     print(reaction_type.name)
     for reactant, product in reaction_type.examples.items():
         print(f"  Reactant: {Chem.MolToSmiles(Chem.MolFromSmiles(reactant))}")
