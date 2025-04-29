@@ -25,6 +25,9 @@ from chem_deg.reactions.hydrolysis import (
     UreaHydrolysisCyclicSix,
     SulfonylureaHydrolysis,
     NitrileHydrolysis,
+    NSHydrolysis,
+    ImideHydrolysisFive,
+    ImideHydrolysisSix,
 )
 
 
@@ -55,4 +58,7 @@ __all__ = [
     "UreaHydrolysisCyclicSix",
     "SulfonylureaHydrolysis",
     "NitrileHydrolysis",
+    "NSHydrolysis",
+    "ImideHydrolysisFive",
+    "ImideHydrolysisSix",
 ]

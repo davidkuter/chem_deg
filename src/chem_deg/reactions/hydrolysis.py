@@ -750,14 +750,69 @@ class NitrileHydrolysis(Reaction):
                 "N#Cc1ccccc1": "NC(=O)c1ccccc1",
                 "N#CC(Cl)(Cl)Cl": "NC(=O)C(Cl)(Cl)Cl",
                 "N#CNC#N": "N#CNC(N)=O",
-                "N#Cc1nn(-c2c(Cl)cc(C(F)(F)F)cc2Cl)c(N)c1S(=O)C(F)(F)F": "N#Cc1nn(-c2c(Cl)cc(C(F)(F)F)cc2Cl)c(N)c1S(=O)C(F)(F)F",  # noqa: E501
+                "N#Cc1nn(-c2c(Cl)cc(C(F)(F)F)cc2Cl)c(N)c1S(=O)C(F)(F)F": "NC(=O)c1nn(-c2c(Cl)cc(C(F)(F)F)cc2Cl)c(N)c1S(=O)C(F)(F)F",  # noqa: E501
+            },
+        )
+
+
+class NSHydrolysis(Reaction):
+    """
+    Hydrolysis of N-S bonds.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="N-S Hydrolysis",
+            reaction_smarts="[#6:2][#7:1]([#6:3])[#16:4][#6,#7,#8:5]>>[#6:2][#7:1]([#6:3]).[OH][#16:4][#6,#7,#8:5]",
+            examples={
+                # Examples from the EPA
+                # A number of examples have R1-N-S-N-R2 bonds which can cleave to give
+                # R1-NH2 or R2-NH2. The code only expects 1 product so these examples have been
+                # omitted. In the end, the product will undergo both N-S hydrolysis so it's not a
+                # big deal.
+                "O=C1C2CC=CCC2C(=O)N1SC(Cl)(Cl)Cl": "O=C1NC(=O)C2CC=CCC12.OSC(Cl)(Cl)Cl",
+                "O=C1c2ccccc2C(=O)N1SC(Cl)(Cl)Cl": "O=C1NC(=O)c2ccccc21.OSC(Cl)(Cl)Cl",
+            },
+        )
+
+
+class ImideHydrolysisFive(Reaction):
+    """
+    Hydrolysis of five-membered ring imides.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Imide Hydrolysis (Five-membered ring)",
+            reaction_smarts="[#6:6]1[#6:7](=[#8:8])[#7:2][#6:3](=[#8:4])[#6,#7,#8:5]~1>>[OH][#6:7](=[#8:8])[#6:6]~[#6,#7,#8:5][#6:3](=[#8:4])[#7:2]",
+            examples={
+                # Examples from the EPA
+                "CC(C)NC(=O)N1CC(=O)N(c2cc(Cl)cc(Cl)c2)C1=O": "CC(C)NC(=O)N(CC(=O)O)C(=O)Nc1cc(Cl)cc(Cl)c1",  # noqa: E501
+                "O=C(O)c1ccccc1N1C(=O)c2ccccc2C1=O": "O=C(O)c1ccccc1NC(=O)c1ccccc1C(=O)O",
+                "C=CC1(C)OC(=O)N(c2cc(Cl)cc(Cl)c2)C1=O": "C=CC(C)(OC(=O)Nc1cc(Cl)cc(Cl)c1)C(=O)O",
+            },
+        )
+
+
+class ImideHydrolysisSix(Reaction):
+    """
+    Hydrolysis of six-membered ring imides.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name="Imide Hydrolysis (Six-membered ring)",
+            reaction_smarts="[#6:6]1[#6:7](=[#8:8])[#7:2][#6:3](=[#8:4])[#6,#7,#8:5][#6,#7,#8:9]~1>>[OH][#6:7](=[#8:8])[#6:6]~[#6,#7,#8:9][#6,#7,#8:5][#6:3](=[#8:4])[#7:2]",
+            examples={
+                # Examples from the EPA
+                "O=C1c2cccc3cccc(c23)C(=O)N1c1ccccc1": "O=C(Nc1ccccc1)c1cccc2cccc(C(=O)O)c2-1",
             },
         )
 
 
 
 if __name__ == "__main__":
-    reaction_type = NitrileHydrolysis()
+    reaction_type = ImideHydrolysisSix()
     print(reaction_type.name)
     for reactant, product in reaction_type.examples.items():
         print(f"  Reactant: {Chem.MolToSmiles(Chem.MolFromSmiles(reactant))}")

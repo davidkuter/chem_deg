@@ -30,6 +30,9 @@ from chem_deg.reactions import (
     UreaHydrolysisCyclicSix,
     SulfonylureaHydrolysis,
     NitrileHydrolysis,
+    NSHydrolysis,
+    ImideHydrolysisFive,
+    ImideHydrolysisSix,
 )
 
 
@@ -62,6 +65,9 @@ from chem_deg.reactions import (
         UreaHydrolysisCyclicSix(),  # 23
         SulfonylureaHydrolysis(),  # 24
         NitrileHydrolysis(),  # 25
+        NSHydrolysis(),  # 26
+        ImideHydrolysisFive(),  # 27
+        ImideHydrolysisSix(),  # 28
     ],
 )
 def test_hydrolysis(reaction: Reaction):
