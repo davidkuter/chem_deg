@@ -25,6 +25,9 @@ from chem_deg.reactions import (
     LactamHydrolysisSix,
     CarbamateHydrolysis,
     ThiocarbamateHydrolysis,
+    UreaHydrolysisAcyclic,
+    UreaHydrolysisCyclicFive,
+    UreaHydrolysisCyclicSix,
 )
 
 
@@ -52,6 +55,9 @@ from chem_deg.reactions import (
         LactamHydrolysisSix(),  # 18
         CarbamateHydrolysis(),  # 19
         ThiocarbamateHydrolysis(),  # 20
+        UreaHydrolysisAcyclic(),  # 21
+        UreaHydrolysisCyclicFive(),  # 22
+        UreaHydrolysisCyclicSix(),  # 23
     ],
 )
 def test_hydrolysis(reaction: Reaction):

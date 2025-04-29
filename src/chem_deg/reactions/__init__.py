@@ -19,7 +19,10 @@ from chem_deg.reactions.hydrolysis import (
     LactamHydrolysisFive,
     LactamHydrolysisSix,
     CarbamateHydrolysis,
-    ThiocarbamateHydrolysis
+    ThiocarbamateHydrolysis,
+    UreaHydrolysisAcyclic,
+    UreaHydrolysisCyclicFive,
+    UreaHydrolysisCyclicSix,
 )
 
 
@@ -45,4 +48,7 @@ __all__ = [
     "LactamHydrolysisSix",
     "CarbamateHydrolysis",
     "ThiocarbamateHydrolysis",
+    "UreaHydrolysisAcyclic",
+    "UreaHydrolysisCyclicFive",
+    "UreaHydrolysisCyclicSix",
 ]
