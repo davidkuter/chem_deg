@@ -243,7 +243,7 @@ class CarboxylateEsterHydrolysis(Reaction):
             name="Carboxylate Ester Hydrolysis",
             # I've used [#6:4] but EPA specifies that it should be [!N,!O]. This didn't work so I
             # used [#6:4] instead. Not sure if I will be missing any reactions because of this.
-            reaction_smarts="[#6:4][C:1](=[O:2])[O:3][CX4:5]>>[#6:4][C:1](=[O:2])[OH].[CX4:5][OH:3]",
+            reaction_smarts="[#6:4][C:1](=[O:2])[O:3][#6:5]>>[#6:4][C:1](=[O:2])[OH].[#6:5][OH:3]",
             examples={
                 # Examples from the EPA
                 "CCC(=O)OCC": "CCC(=O)O.CCO",
@@ -257,3 +257,11 @@ class CarboxylateEsterHydrolysis(Reaction):
             halflife7=HALFLIFE2,
             halflife9=HALFLIFE5,
         )
+
+
+if __name__ == "__main__":
+    ester_hydrolysis = CarboxylateEsterHydrolysis()
+    aspirin_smiles = "CC(=O)OC1=CC=CC=C1C(=O)O"
+    aspirin_smiles = Chem.MolToSmiles(Chem.MolFromSmiles(aspirin_smiles))
+    products = ester_hydrolysis.react(aspirin_smiles)
+    print(f"Products of hydrolysis of {aspirin_smiles}:\n{products}")

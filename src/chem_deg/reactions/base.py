@@ -112,7 +112,14 @@ class Reaction:
         list[Chem.Mol] | None
             A list of the products of the reaction as rdkit Mol objects.
         """
-        return self._react(Chem.MolFromSmiles(reactant))
+        try:
+            mol = Chem.MolFromSmiles(reactant)
+        except Exception:
+            raise TypeError(
+                f"Invalid SMILES string provided: {reactant}."
+            )
+
+        return self._react(mol)
 
     def __str__(self):
         return f"{self.name}: {self.reaction_smarts}"
@@ -152,7 +159,7 @@ class ReactionClass:
 
     def react(
         self, reactant: str, return_mol: bool = False
-    ) -> dict[Reaction, list[str | Chem.Mol]]:
+    ) -> list[tuple[Reaction, str | Chem.Mol]]:
         """
         React a molecule with all reactions in the reaction class.
 
@@ -166,21 +173,21 @@ class ReactionClass:
 
         Returns
         -------
-        dict[Reaction, list[Reaction | Chem.Mol]]
-            A dictionary of the products of the reaction. The keys are the reaction objects and the
-            values are the product SMILES or Mol objects.
+        list[tuple[Reaction, str | Chem.Mol]]
+            A list of tuples containing the reaction and products the products of the reaction.
         """
         # React the reactant with all reactions in the reaction class
-        products = {}
+        products = []
         for reaction in self.reactions:
             product = reaction.react(reactant)
             if product:
-                products[reaction.name] = product
+                for p in product:
+                    products.append((reaction, p))
 
         # Convert products to SMILES if return_mol is False
         if return_mol is False:
-            products = {
-                reaction: [self._cleaned_smiles(Chem.MolToSmiles(p)) for p in product]
-                for reaction, product in products.items()
-            }
+            products = [
+                (reaction, self._cleaned_smiles(Chem.MolToSmiles(product)))
+                for reaction, product in products
+            ]
         return products

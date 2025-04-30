@@ -12,6 +12,8 @@ description = "A short description of your project"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
+    "matplotlib>=3.10.1",
+    "networkx>=3.4.2",
     "rdkit>=2024.9.6",
 ]
 
