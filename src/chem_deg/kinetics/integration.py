@@ -1,4 +1,5 @@
 import networkx as nx
+import numpy as np
 import pandas as pd
 
 from scipy.integrate import solve_ivp
@@ -12,20 +13,17 @@ def _formation_degradation(
     edges: list[tuple[str, str, dict]],
     conc_dict: dict[str, float],
     ph: int = 5,
-    formation: bool = True,
 ) -> float:
     results = []
-    for reactant, product, attributes in edges:
+    for reactant, _, attributes in edges:
+        # Get the rate
         reaction: Reaction = attributes["reaction"]
         halflife: HalfLife = reaction.halflife[ph]
         rate = halflife.rate(halflife.midpoint)
-        # Get the concentration.
-        # If this is a formation reaction, we want the concentration of the reactant.
-        # If this is a degradation reaction, we want the concentration of the product.
-        if formation:
-            concentration = conc_dict[reactant]
-        else:
-            concentration = conc_dict[product]
+
+        # Get the concentration of the reactant
+        concentration = conc_dict[reactant]
+
         # Calculate the rate of formation
         results.append(rate * concentration)
     return sum(results)
@@ -41,12 +39,14 @@ def ode_equations(graph: nx.MultiDiGraph, concentrations: list[float], ph: int =
     equations = []
     for node in graph.nodes:
         # Determine rate of formation using in edges
+        # graph.in_edges("e") # => [('a', 'e'), ('d', 'e')] (note: e is second)
         in_edges = graph.in_edges(node, data=True)
-        formation = _formation_degradation(in_edges, conc_dict, ph=ph, formation=True)
+        formation = _formation_degradation(in_edges, conc_dict, ph=ph)
 
         # Determine rate of degradation using out edges
+        # graph.out_edges("b") # => [('b', 'c'), ('b', 'd')] (note: b is first)
         out_edges = graph.out_edges(node, data=True)
-        degradation = _formation_degradation(out_edges, conc_dict, ph=ph, formation=False)
+        degradation = _formation_degradation(out_edges, conc_dict, ph=ph)
 
         equations.append(formation - degradation)
 
@@ -62,19 +62,34 @@ def _integrate(t, conc, graph: nx.MultiDiGraph, ph: int = 5) -> list[float]:
 
 
 def degradation_kinetics(
-    degradation_graph: nx.MultiDiGraph, ph: int = 5, init_conc: float = 1.0
+    degradation_graph: nx.MultiDiGraph,
+    ph: int = 5,
+    init_conc: float = 1.0,
+    time_span: tuple[int, int] = (0, 1000),
+    time_log: bool = False,
+    time_points: int = 100,
 ) -> pd.DataFrame:
+    
     # Initialize the concentrations of all nodes to 0, except for the reactant
     concentrations = [0.0] * len(degradation_graph.nodes)
     concentrations[0] = init_conc
 
+    # Set the time span for the integration
+    if time_log:
+        time_min = 0 if time_span[0] == 0 else np.log(time_span[0])
+        t_eval = np.logspace(time_min, np.log10(time_span[1]), num=time_points)
+    else:
+        t_eval = np.linspace(time_span[0], time_span[1], num=time_points)
+
     # Solve the ODEs
     solution = solve_ivp(
         fun=_integrate,
-        t_span=(0, 1000),
+        t_span=time_span,
         y0=concentrations,
         args=(degradation_graph, ph),
         method="RK45",
+        dense_output=True,
+        t_eval=t_eval,
     )
 
     # Format the results into a DataFrame
@@ -105,4 +120,5 @@ if __name__ == "__main__":
     graph.add_edge("Deg6", "Deg4", reaction=hydrolysis.reactions[5])
     graph.add_edge("Deg4", "Deg7", reaction=hydrolysis.reactions[6])
 
-    print(degradation_kinetics(graph))
+    df = degradation_kinetics(graph)
+    print(df)
