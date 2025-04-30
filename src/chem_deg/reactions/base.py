@@ -1,7 +1,7 @@
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from chem_deg.halflife import HalfLife
+from chem_deg.kinetics.halflife import HalfLife
 
 
 class Reaction:

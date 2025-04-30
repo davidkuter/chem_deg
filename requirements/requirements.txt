@@ -20,9 +20,13 @@ numpy==2.2.4
     # via
     #   contourpy
     #   matplotlib
+    #   pandas
     #   rdkit
+    #   scipy
 packaging==25.0
     # via matplotlib
+pandas==2.2.3
+    # via chem-deg (../pyproject.toml)
 pillow==11.1.0
     # via
     #   matplotlib
@@ -30,8 +34,16 @@ pillow==11.1.0
 pyparsing==3.2.3
     # via matplotlib
 python-dateutil==2.9.0.post0
-    # via matplotlib
+    # via
+    #   matplotlib
+    #   pandas
+pytz==2025.2
+    # via pandas
 rdkit==2024.9.6
+    # via chem-deg (../pyproject.toml)
+scipy==1.15.2
     # via chem-deg (../pyproject.toml)
 six==1.17.0
     # via python-dateutil
+tzdata==2025.2
+    # via pandas

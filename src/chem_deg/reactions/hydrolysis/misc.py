@@ -7,7 +7,7 @@ https://qed.epa.gov/static_qed/cts_app/docs/Hydrolysis%20Lib%20HTML/HydrolysisRx
 
 from rdkit import Chem
 
-from chem_deg.halflife import HALFLIFE1, HALFLIFE3, HALFLIFE4, HALFLIFE5, HALFLIFE6, HALFLIFE7
+from chem_deg.kinetics.halflife import HALFLIFE1, HALFLIFE3, HALFLIFE4, HALFLIFE5, HALFLIFE6, HALFLIFE7
 from chem_deg.reactions.base import Reaction
 
 

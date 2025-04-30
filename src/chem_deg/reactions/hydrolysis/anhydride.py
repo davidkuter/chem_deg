@@ -1,4 +1,4 @@
-from chem_deg.halflife import HALFLIFE7
+from chem_deg.kinetics.halflife import HALFLIFE7
 from chem_deg.reactions.base import Reaction
 
 
