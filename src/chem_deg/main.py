@@ -1,157 +1,56 @@
-import matplotlib.pyplot as plt
-import networkx as nx
+import pandas as pd
 
-from itertools import accumulate
 from rdkit import Chem
 
-from chem_deg.reactions.base import ReactionClass, Reaction
-from chem_deg.reactions.reaction_classes import Hydrolysis
+from chem_deg.degradation import chemical_degradation, draw_graph
+from chem_deg.kinetics.integration import degradation_kinetics
 
 
-def draw_graph(graph: nx.MultiDiGraph, filename: str = "graph.png"):
+def simulate_degradation(
+    compound: str | Chem.Mol,
+    max_generation: int = 10_000,
+    ph: int = 5,
+    plot_degradation: bool = False,
+    time_log: bool = False
+) -> pd.DataFrame:
     """
-    Draw the graph and save it to a file.
+    Simulate the degradation kinetics of a compound.
 
     Parameters
     ----------
-    graph : nx.MultiDiGraph
-        The graph to draw.
-    filename : str, optional
-        The name of the file to save the graph to (default is "graph.png").
+    compound : str | Chem.Mol
+        The compound to compute the degradation kinetics for.
+    max_generation : int, optional
+        The maximum number of generations to compute, by default 10_000.
+    ph : int, optional
+        The pH value to use for the calculations, by default 5.
+    plot_degradation : bool, optional
+        Whether to plot the degradation graph, by default False.
+    time_log : bool, optional
+        Whether to use logarithmic time points, by default False.
+    
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the degradation kinetics results.
     """
-    connectionstyle = [f"arc3,rad={r}" for r in accumulate([0.15] * 4)]
-  
-    pos = nx.shell_layout(graph)
-    nx.draw_networkx_nodes(graph, pos)
-    nx.draw_networkx_labels(graph, pos, font_size=10)
-    nx.draw_networkx_edges(graph, pos, edge_color="grey", connectionstyle=connectionstyle)
+    # Compute the degradation graph
+    deg_graph = chemical_degradation(compound=compound, max_generation=max_generation)
 
-    labels = {
-        tuple(edge): f"gen={attrs['generation']}"
-        for *edge, attrs in graph.edges(keys=True, data=True)
-    }
-    nx.draw_networkx_edge_labels(
-        graph,
-        pos,
-        labels,
-        connectionstyle=connectionstyle,
-        label_pos=0.3,
-        font_color="blue",
-        bbox={"alpha": 0},
-    )
+    # Draw the degradation graph if requested
+    if plot_degradation:
+        draw_graph(deg_graph, filename="degradation_graph.png")
 
-    plt.savefig(filename)
-    plt.close()
+    # Compute the degradation kinetics
+    results = degradation_kinetics(degradation_graph=deg_graph, ph=ph, time_log=time_log)
 
-
-def _add_products_to_graph(
-    graph: nx.MultiDiGraph,
-    reactant: Chem.Mol,
-    products: list[tuple[Reaction, str]],
-    generation: int,
-) -> nx.MultiDiGraph:
-
-    for reaction, product in products:
-        # Add the reactant to the graph if it doesn't exist
-        if graph.has_node(product) is False:
-            graph.add_node(product)
-
-        # Add the edge from the reactant to the product
-        graph.add_edge(
-            reactant,
-            product,
-            reaction=reaction,
-            generation=generation,
-        )
-
-    return graph
-
-
-def _compute_graph(
-    reactants: list[str],
-    reaction_classes: list[ReactionClass],
-    generation: int = 1,
-    max_generation: int = 10_000,
-    graph=None,
-):
-    # Initialize the graph if not provided
-    if graph is None:
-        graph = nx.MultiDiGraph()
-        # There will only be one reactant at the start
-        graph.add_node(reactants[0])
-
-    # Get number of edges in the graph - used to determine stop condition
-    nodes = set(graph.nodes())
-
-    # Compute the products for each reactant and add them to the graph
-    for reactant in reactants:
-        for reaction_class in reaction_classes:
-            # Determine the products for the reactant for this reaction class
-            products: list[tuple[Reaction, str]] = reaction_class.react(reactant, return_mol=False)
-
-            # Some products are salts, represented as a single string containing "."
-            # We want to split these into separate products and add each molecule to the graph
-            flat_products = []
-            for reaction, product in products:
-                if "." in product:
-                    flattened = [(reaction, p) for p in product.split(".")]
-                    flat_products.extend(flattened)
-                else:
-                    flat_products.append((reaction, product))
-
-            # Add the products to the graph
-            graph = _add_products_to_graph(
-                graph=graph, reactant=reactant, products=flat_products, generation=generation
-            )
-
-    # Determine stop criteria
-
-    # - Exit if the max generation has been reached
-    generation += 1
-    if generation >= max_generation:
-        return graph
-
-    # - Exit if no new nodes were added
-    new_products = set(graph.nodes()) - nodes
-    if len(new_products) == 0:
-        return graph
-
-    # Recursively compute products for the new products if stop criteria are not met
-    return _compute_graph(
-        reactants=list(new_products),
-        reaction_classes=reaction_classes,
-        generation=generation,
-        max_generation=max_generation,
-        graph=graph,
-    )
-
-
-def chemical_degradation(compound: str | Chem.Mol, max_generation: int = 10_000):
-    # Validate the input compound
-    if isinstance(compound, Chem.Mol):
-        try:
-            compound = Chem.MolToSmiles(compound)
-        except Exception:
-            raise ValueError("Invalid Mol object string provided.")
-
-    # Standarize the SMILES
-    compound = Chem.MolToSmiles(Chem.MolFromSmiles(compound))
-
-    # Initialize the reaction class
-    reaction_classes = [Hydrolysis()]
-
-    # Determine degradation products
-    deg_graph = _compute_graph(
-        [compound], reaction_classes, generation=1, max_generation=max_generation
-    )
-
-    return deg_graph
+    return results
 
 
 if __name__ == "__main__":
     # Example usage
-    smiles = "CC(=O)OC1=CC=CC=C1C(=O)O"  # Aspirin
-    max_gen = 3
-    graph = chemical_degradation(compound=smiles, max_generation=max_gen)
-    print("Products:", graph.nodes())
-    draw_graph(graph, "chemical_degradation.png")
+    # Penicillin G
+    smiles = "CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C"
+    results = simulate_degradation(compound=smiles, ph=9, plot_degradation=True, time_log=True)
+    results.to_csv("degradation_kinetics.tsv", sep="\t", index=True)
+    print(results)

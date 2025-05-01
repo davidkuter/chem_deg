@@ -14,7 +14,9 @@ requires-python = ">=3.8"
 dependencies = [
     "matplotlib>=3.10.1",
     "networkx>=3.4.2",
+    "pandas>=2.2.3",
     "rdkit>=2024.9.6",
+    "scipy>=1.15.2",
 ]
 
 [project.optional-dependencies]
@@ -25,9 +27,13 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-ra -q"
+minversion = "6.0"
+addopts = "-ra -q -v --cov=src --cov-report=term-missing"
 testpaths = [
-    "tests",
+    "test",
+]
+norecursedirs = [
+    "contrib",
 ]
 
 [tool.ruff.lint]

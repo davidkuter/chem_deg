@@ -19,6 +19,16 @@ class HalfLife:
         """
         return (self.min + self.max) / 2
 
+    @staticmethod
+    def rate(value: float) -> float:
+        """
+        Calculate the rate constant based on the half-life value.
+
+        :param value: Half-life value.
+        :return: Rate constant.
+        """
+        return 0.693 / value
+
 
 # Rank 7: t < 30 mins
 HALFLIFE7 = HalfLife(

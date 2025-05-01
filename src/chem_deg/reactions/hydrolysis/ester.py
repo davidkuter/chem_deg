@@ -1,6 +1,6 @@
 from rdkit import Chem
 
-from chem_deg.halflife import HalfLife, HALFLIFE2, HALFLIFE3, HALFLIFE4, HALFLIFE5
+from chem_deg.kinetics.halflife import HalfLife, HALFLIFE2, HALFLIFE3, HALFLIFE4, HALFLIFE5
 from chem_deg.reactions.base import Reaction
 from chem_deg.util import annotate_partial_charges
 

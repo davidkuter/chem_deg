@@ -1,6 +1,6 @@
 from rdkit import Chem
 
-from chem_deg.halflife import HALFLIFE1, HALFLIFE2, HALFLIFE3
+from chem_deg.kinetics.halflife import HALFLIFE1, HALFLIFE2, HALFLIFE3
 from chem_deg.reactions.base import Reaction
 
 
