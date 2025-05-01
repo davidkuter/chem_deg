@@ -65,7 +65,7 @@ def degradation_kinetics(
     degradation_graph: nx.MultiDiGraph,
     ph: int = 5,
     init_conc: float = 1.0,
-    time_span: tuple[int, int] = (0, 1000),
+    time_span: tuple[int, int] = (0, 720),  # 0 to 720 hours (30 days)
     time_log: bool = False,
     time_points: int = 100,
 ) -> pd.DataFrame:
@@ -76,8 +76,9 @@ def degradation_kinetics(
 
     # Set the time span for the integration
     if time_log:
-        time_min = 0 if time_span[0] == 0 else np.log(time_span[0])
+        time_min = np.log(0.5) if time_span[0] == 0 else np.log(time_span[0])
         t_eval = np.logspace(time_min, np.log10(time_span[1]), num=time_points)
+        t_eval = np.insert(t_eval, 0, 0)  # Add the initial time point
     else:
         t_eval = np.linspace(time_span[0], time_span[1], num=time_points)
 
@@ -89,12 +90,13 @@ def degradation_kinetics(
         args=(degradation_graph, ph),
         method="RK45",
         dense_output=True,
-        t_eval=t_eval,
+        # Rounding is required to avoid sensitivity where solve_ivp thinks t_eval is not in t_span
+        t_eval=np.round(t_eval, 4),
     )
 
     # Format the results into a DataFrame
     results = pd.DataFrame(solution.y.T, columns=degradation_graph.nodes, index=solution.t)
-    results = results.rename_axis("Time (min)", axis=0)
+    results = results.rename_axis("Time (hours)", axis=0)
 
     results = results * 100 / init_conc  # Convert to percentage
     results = results.round(2)  # Round to 2 decimal places

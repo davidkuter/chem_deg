@@ -1,11 +1,13 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 
+from io import BytesIO
 from itertools import accumulate
 from rdkit import Chem
 
 from chem_deg.reactions.base import ReactionClass, Reaction
 from chem_deg.reactions.reaction_classes import Hydrolysis
+from chem_deg.util import draw_image
 
 
 def draw_graph(graph: nx.MultiDiGraph, filename: str = "graph.png"):
@@ -19,29 +21,37 @@ def draw_graph(graph: nx.MultiDiGraph, filename: str = "graph.png"):
     filename : str, optional
         The name of the file to save the graph to (default is "graph.png").
     """
-    connectionstyle = [f"arc3,rad={r}" for r in accumulate([0.15] * 4)]
-  
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    ax1 = axes[0]  # ax1 is graph
+    ax2 = axes[1]  # ax2 is SMILES visualization
+
+    # Draw the graph
+    connectionstyle = [f"arc3,rad={r}" for r in accumulate([0.15] * 5)]
+
     pos = nx.shell_layout(graph)
-    nx.draw_networkx_nodes(graph, pos)
-    nx.draw_networkx_labels(graph, pos, font_size=10)
-    nx.draw_networkx_edges(graph, pos, edge_color="grey", connectionstyle=connectionstyle)
-
-    labels = {
-        tuple(edge): f"gen={attrs['generation']}"
-        for *edge, attrs in graph.edges(keys=True, data=True)
-    }
-    nx.draw_networkx_edge_labels(
-        graph,
-        pos,
-        labels,
-        connectionstyle=connectionstyle,
-        label_pos=0.3,
-        font_color="blue",
-        bbox={"alpha": 0},
+    nx.draw_networkx_nodes(graph, pos, ax=ax1)
+    nx.draw_networkx_labels(
+        graph, pos, font_size=10, labels={node: n for n, node in enumerate(graph.nodes())}, ax=ax1
     )
+    nx.draw_networkx_edges(graph, pos, edge_color="grey", connectionstyle=connectionstyle, ax=ax1)
 
-    plt.savefig(filename)
-    plt.close()
+    # Visualize SMILES
+    png = draw_image(
+        compound=[Chem.MolFromSmiles(node) for node in graph.nodes()],
+        out_file=None,
+        labels=[str(n) for n in range(len(graph.nodes()))],
+        mols_per_row=3,
+    )
+    image = plt.imread(BytesIO(png))
+    ax2.imshow(
+        image,
+        aspect="auto"
+    )
+    ax2.axis("off")
+
+    # Save the figure
+    fig.savefig(filename)
+    fig.clear()
 
 
 def _add_products_to_graph(
@@ -50,7 +60,6 @@ def _add_products_to_graph(
     products: list[tuple[Reaction, str]],
     generation: int,
 ) -> nx.MultiDiGraph:
-
     for reaction, product in products:
         # Add the reactant to the graph if it doesn't exist
         if graph.has_node(product) is False:
@@ -126,7 +135,7 @@ def _compute_graph(
     )
 
 
-def chemical_degradation(compound: str | Chem.Mol, max_generation: int = 10_000):
+def chemical_degradation(compound: str | Chem.Mol, max_generation: int = 10_000) -> nx.MultiDiGraph:
     # Validate the input compound
     if isinstance(compound, Chem.Mol):
         try:

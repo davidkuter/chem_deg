@@ -82,10 +82,16 @@ def annotate_atom_indexes(compound: Chem.Mol) -> Chem.Mol:
 
 
 def draw_image(
-    compound: Chem.Mol, size: tuple[int, int] = (300, 300), out_file: str = None
+    compound: Chem.Mol | list[Chem.Mol],
+    size: tuple[int, int] = (200, 200),
+    out_file: str = None,
+    labels: str | list [str] = None,
+    mols_per_row: int = 1,
 ) -> str | bytes:
     """
     Draw the compound and save it to a file.
+    Adapted from: 
+    https://greglandrum.github.io/rdkit-blog/posts/2023-10-25-molsmatrixtogridimage.html
 
     Parameters
     ----------
@@ -100,12 +106,29 @@ def draw_image(
         The output file name or the image as bytes.
     """
 
+    if not isinstance(compound, list):
+        compound = [compound]
+
+    if labels and not isinstance(labels, list):
+        labels = [labels]
+
+    if labels is None:
+        labels = [Chem.MolToSmiles(mol) for mol in compound]
+
     # Draw the molecule with partial charges
-    img = Draw.MolToImage(compound, size=size, kekulize=True, wedgeBonds=True)
+    img = Draw.MolsToGridImage(
+        compound,
+        legends=labels,
+        molsPerRow=mols_per_row,
+        subImgSize=size,
+        returnPNG=True,
+    )
+    # img = Draw.MolToImage(compound, size=size, kekulize=True, wedgeBonds=True)
 
     # Write to file if out_file is provided
     if out_file:
         with open(out_file, "wb") as f:
-            img.save(f)
+            f.write(img)
+            # img.save(f)
 
     return img
