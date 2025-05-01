@@ -146,7 +146,7 @@ def chemical_degradation(compound: str | Chem.Mol, max_generation: int = 10_000)
         if compound is None:
             raise ValueError(f"Invalid SMILES provided: {compound}")
 
-    # Standarize the SMILES
+    # Standardize the SMILES
     compound = Chem.MolToSmiles(compound)
 
     # Initialize the reaction class
