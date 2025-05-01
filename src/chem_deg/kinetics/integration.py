@@ -13,13 +13,40 @@ def _formation_degradation(
     edges: list[tuple[str, str, dict]],
     conc_dict: dict[str, float],
     ph: int = 5,
+    degradation: bool = True,
 ) -> float:
+    """
+    Calculate the rate of formation or degradation based on the edges and concentrations.
+    
+    Parameters
+    ----------
+    edges : list[tuple[str, str, dict]]
+        List of edges in the graph, where each edge is a tuple (source, target, attributes).
+    conc_dict : dict[str, float]
+        Dictionary mapping node names to their concentrations.
+    ph : int, optional
+        The pH value to use for the calculations, by default 5.
+    degradation : bool, optional
+        Whether to calculate the rate of degradation (True) or formation (False), by default True.
+
+    Returns
+    -------
+    float
+        The rate of formation or degradation.
+    """
     results = []
     for reactant, _, attributes in edges:
         # Get the rate
         reaction: Reaction = attributes["reaction"]
         halflife: HalfLife = reaction.halflife[ph]
         rate = halflife.rate(halflife.midpoint)
+
+        # Important: account for double counting.
+        # When a reaction produces multiple products, the rate is divided by the number of products.
+        # We should only do this, however, for degradation reactions.
+        if degradation:
+            num_products = len(reaction.reaction_smarts.split(">>")[1].split("."))
+            rate /= num_products
 
         # Get the concentration of the reactant
         concentration = conc_dict[reactant]
@@ -29,9 +56,25 @@ def _formation_degradation(
     return sum(results)
 
 
+# NOTE: This will not work for reactions with multiple reactants.
+# ToDo: Make compatible with multiple reactants.
 def ode_equations(graph: nx.MultiDiGraph, concentrations: list[float], ph: int = 5) -> list[float]:
     """
     Define the ODEs for the degradation kinetics based on the graph structure.
+
+    Parameters
+    ----------
+    graph : nx.MultiDiGraph
+        The directed graph representing the degradation pathways.
+    concentrations : list[float]
+        The current concentrations of the nodes in the graph.
+    ph : int, optional
+        The pH value to use for the calculations, by default 5.
+    
+    Returns
+    -------
+    list[float]
+        The rates of change of the concentrations for each node in the graph.
     """
     # Create a dictionary to map node names to their concentrations
     conc_dict = {node: conc for node, conc in zip(graph.nodes, concentrations)}
@@ -41,12 +84,12 @@ def ode_equations(graph: nx.MultiDiGraph, concentrations: list[float], ph: int =
         # Determine rate of formation using in edges
         # graph.in_edges("e") # => [('a', 'e'), ('d', 'e')] (note: e is second)
         in_edges = graph.in_edges(node, data=True)
-        formation = _formation_degradation(in_edges, conc_dict, ph=ph)
+        formation = _formation_degradation(in_edges, conc_dict, ph=ph, degradation=False)
 
         # Determine rate of degradation using out edges
         # graph.out_edges("b") # => [('b', 'c'), ('b', 'd')] (note: b is first)
         out_edges = graph.out_edges(node, data=True)
-        degradation = _formation_degradation(out_edges, conc_dict, ph=ph)
+        degradation = _formation_degradation(out_edges, conc_dict, ph=ph, degradation=True)
 
         equations.append(formation - degradation)
 
@@ -55,7 +98,7 @@ def ode_equations(graph: nx.MultiDiGraph, concentrations: list[float], ph: int =
 
 def _integrate(t, conc, graph: nx.MultiDiGraph, ph: int = 5) -> list[float]:
     """
-    Integrate the ODEs over time.
+    Integrate the ODEs over time. Wrapped for use with solve_ivp.
     """
     # Update the concentrations based on the ODE equations
     return ode_equations(graph=graph, concentrations=conc, ph=ph)
@@ -69,7 +112,30 @@ def degradation_kinetics(
     time_log: bool = False,
     time_points: int = 100,
 ) -> pd.DataFrame:
-    
+    """
+    Calculate the degradation kinetics of a compound over time based on the degradation graph.
+
+    Parameters
+    ----------
+    degradation_graph : nx.MultiDiGraph
+        The directed graph representing the degradation pathways.
+    ph : int, optional
+        The pH value to use for the calculations, by default 5.
+    init_conc : float, optional
+        The initial concentration of the reactant, by default 1.0.
+    time_span : tuple[int, int], optional
+        The time span (in hours) for the integration, by default (0, 720).
+    time_log : bool, optional
+        Whether to use logarithmic time points, by default False.
+    time_points : int, optional
+        The number of time points to generate, by default 100.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the concentrations of each node over time.
+    """
+
     # Initialize the concentrations of all nodes to 0, except for the reactant
     concentrations = [0.0] * len(degradation_graph.nodes)
     concentrations[0] = init_conc
@@ -97,8 +163,6 @@ def degradation_kinetics(
     # Format the results into a DataFrame
     results = pd.DataFrame(solution.y.T, columns=degradation_graph.nodes, index=solution.t)
     results = results.rename_axis("Time (hours)", axis=0)
-
-    results = results * 100 / init_conc  # Convert to percentage
     results = results.round(2)  # Round to 2 decimal places
 
     return results

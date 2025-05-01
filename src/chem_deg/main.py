@@ -1,18 +1,20 @@
+import pandas as pd
+
 from rdkit import Chem
 
 from chem_deg.degradation import chemical_degradation, draw_graph
 from chem_deg.kinetics.integration import degradation_kinetics
 
 
-def main(
+def simulate_degradation(
     compound: str | Chem.Mol,
     max_generation: int = 10_000,
     ph: int = 5,
     plot_degradation: bool = False,
     time_log: bool = False
-):
+) -> pd.DataFrame:
     """
-    Main function to compute the degradation kinetics of a compound.
+    Simulate the degradation kinetics of a compound.
 
     Parameters
     ----------
@@ -24,6 +26,13 @@ def main(
         The pH value to use for the calculations, by default 5.
     plot_degradation : bool, optional
         Whether to plot the degradation graph, by default False.
+    time_log : bool, optional
+        Whether to use logarithmic time points, by default False.
+    
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the degradation kinetics results.
     """
     # Compute the degradation graph
     deg_graph = chemical_degradation(compound=compound, max_generation=max_generation)
@@ -40,7 +49,8 @@ def main(
 
 if __name__ == "__main__":
     # Example usage
-    compound = "CCC(=O)N(c1ccccc1)C1(C(=O)OC)CCN(CCC(=O)OC)CC1"
-    results = main(compound=compound, ph=9, plot_degradation=True, time_log=True)
+    # Penicillin G
+    compound = "CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C"
+    results = simulate_degradation(compound=compound, ph=9, plot_degradation=True, time_log=True)
     results.to_csv("degradation_kinetics.tsv", sep="\t", index=True)
     print(results)

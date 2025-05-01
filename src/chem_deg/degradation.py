@@ -13,6 +13,8 @@ from chem_deg.util import draw_image
 def draw_graph(graph: nx.MultiDiGraph, filename: str = "graph.png"):
     """
     Draw the graph and save it to a file.
+    Adapted from: 
+    https://networkx.org/documentation/stable/auto_examples/drawing/plot_multigraphs.html
 
     Parameters
     ----------
@@ -89,7 +91,7 @@ def _compute_graph(
         # There will only be one reactant at the start
         graph.add_node(reactants[0])
 
-    # Get number of edges in the graph - used to determine stop condition
+    # Get unique nodes in the graph - used to determine stop condition
     nodes = set(graph.nodes())
 
     # Compute the products for each reactant and add them to the graph
@@ -159,7 +161,8 @@ def chemical_degradation(compound: str | Chem.Mol, max_generation: int = 10_000)
 
 if __name__ == "__main__":
     # Example usage
-    smiles = "CC(=O)OC1=CC=CC=C1C(=O)O"  # Aspirin
+    # smiles = "CC(=O)OC1=CC=CC=C1C(=O)O"  # Aspirin
+    smiles = "CCC(=O)N(c1ccccc1)C1(C(=O)OC)CCN(CCC(=O)OC)CC1"
     max_gen = 3
     graph = chemical_degradation(compound=smiles, max_generation=max_gen)
     print("Products:", graph.nodes())
