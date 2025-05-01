@@ -10,7 +10,7 @@ from chem_deg.reactions.reaction_classes import Hydrolysis
 from chem_deg.util import draw_image
 
 
-def draw_graph(graph: nx.MultiDiGraph, filename: str = "graph.png"):
+def draw_graph(graph: nx.MultiDiGraph, filename: str = None) -> plt.Figure:
     """
     Draw the graph and save it to a file.
     Adapted from: 
@@ -21,7 +21,7 @@ def draw_graph(graph: nx.MultiDiGraph, filename: str = "graph.png"):
     graph : nx.MultiDiGraph
         The graph to draw.
     filename : str, optional
-        The name of the file to save the graph to (default is "graph.png").
+        The name of the file to save the graph to. If None, the graph will not be saved.
     """
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))
     ax1 = axes[0]  # ax1 is graph
@@ -52,8 +52,10 @@ def draw_graph(graph: nx.MultiDiGraph, filename: str = "graph.png"):
     ax2.axis("off")
 
     # Save the figure
-    fig.savefig(filename)
-    fig.clear()
+    if filename:
+        fig.savefig(filename)
+    
+    return fig
 
 
 def _add_products_to_graph(
@@ -139,14 +141,13 @@ def _compute_graph(
 
 def chemical_degradation(compound: str | Chem.Mol, max_generation: int = 10_000) -> nx.MultiDiGraph:
     # Validate the input compound
-    if isinstance(compound, Chem.Mol):
-        try:
-            compound = Chem.MolToSmiles(compound)
-        except Exception:
-            raise ValueError("Invalid Mol object string provided.")
+    if isinstance(compound, str):
+        compound = Chem.MolFromSmiles(compound)
+        if compound is None:
+            raise ValueError(f"Invalid SMILES provided: {compound}")
 
     # Standarize the SMILES
-    compound = Chem.MolToSmiles(Chem.MolFromSmiles(compound))
+    compound = Chem.MolToSmiles(compound)
 
     # Initialize the reaction class
     reaction_classes = [Hydrolysis()]
@@ -161,8 +162,8 @@ def chemical_degradation(compound: str | Chem.Mol, max_generation: int = 10_000)
 
 if __name__ == "__main__":
     # Example usage
-    # smiles = "CC(=O)OC1=CC=CC=C1C(=O)O"  # Aspirin
-    smiles = "CCC(=O)N(c1ccccc1)C1(C(=O)OC)CCN(CCC(=O)OC)CC1"
+    # Penicillin G
+    smiles = "CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C"
     max_gen = 3
     graph = chemical_degradation(compound=smiles, max_generation=max_gen)
     print("Products:", graph.nodes())

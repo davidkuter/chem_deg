@@ -87,7 +87,7 @@ def draw_image(
     out_file: str = None,
     labels: str | list [str] = None,
     mols_per_row: int = 1,
-) -> str | bytes:
+) -> bytes:
     """
     Draw the compound and save it to a file.
     Adapted from: 
@@ -123,12 +123,10 @@ def draw_image(
         subImgSize=size,
         returnPNG=True,
     )
-    # img = Draw.MolToImage(compound, size=size, kekulize=True, wedgeBonds=True)
 
     # Write to file if out_file is provided
     if out_file:
         with open(out_file, "wb") as f:
             f.write(img)
-            # img.save(f)
 
     return img

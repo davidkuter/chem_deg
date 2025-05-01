@@ -50,7 +50,7 @@ def simulate_degradation(
 if __name__ == "__main__":
     # Example usage
     # Penicillin G
-    compound = "CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C"
-    results = simulate_degradation(compound=compound, ph=9, plot_degradation=True, time_log=True)
+    smiles = "CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C"
+    results = simulate_degradation(compound=smiles, ph=9, plot_degradation=True, time_log=True)
     results.to_csv("degradation_kinetics.tsv", sep="\t", index=True)
     print(results)

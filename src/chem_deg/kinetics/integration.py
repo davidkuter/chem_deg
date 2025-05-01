@@ -17,7 +17,7 @@ def _formation_degradation(
 ) -> float:
     """
     Calculate the rate of formation or degradation based on the edges and concentrations.
-    
+
     Parameters
     ----------
     edges : list[tuple[str, str, dict]]
@@ -38,6 +38,15 @@ def _formation_degradation(
     for reactant, _, attributes in edges:
         # Get the rate
         reaction: Reaction = attributes["reaction"]
+
+        # We currently don't support reactions with multiple reactants.
+        # This is a limitation of the current implementation.
+        # If the reaction has multiple reactants, raise an error.
+        if "." in reaction.reaction_smarts.split(">>")[0]:
+            raise ValueError(
+                f"Edge ({reactant}, {attributes}) has multiple reactants. This is not supported."
+            )
+
         halflife: HalfLife = reaction.halflife[ph]
         rate = halflife.rate(halflife.midpoint)
 
@@ -70,7 +79,7 @@ def ode_equations(graph: nx.MultiDiGraph, concentrations: list[float], ph: int =
         The current concentrations of the nodes in the graph.
     ph : int, optional
         The pH value to use for the calculations, by default 5.
-    
+
     Returns
     -------
     list[float]
@@ -164,6 +173,7 @@ def degradation_kinetics(
     results = pd.DataFrame(solution.y.T, columns=degradation_graph.nodes, index=solution.t)
     results = results.rename_axis("Time (hours)", axis=0)
     results = results.round(2)  # Round to 2 decimal places
+    results = results.replace(-0.0, 0.0)  # Convert -0.0 to 0.0
 
     return results
 
