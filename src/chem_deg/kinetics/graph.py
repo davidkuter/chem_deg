@@ -54,6 +54,7 @@ def draw_kinetics_graph(df: pd.DataFrame, ph: int |  str, filename: str = None) 
     ax2.axis("off")
 
     # Save the figure
+    fig.tight_layout()
     if filename:
         fig.savefig(filename)
 

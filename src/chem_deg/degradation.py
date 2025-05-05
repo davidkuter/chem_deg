@@ -49,6 +49,7 @@ def draw_degradation_graph(graph: nx.MultiDiGraph, filename: str = None) -> plt.
     ax2.axis("off")
 
     # Save the figure
+    fig.tight_layout()
     if filename:
         fig.savefig(filename)
 
