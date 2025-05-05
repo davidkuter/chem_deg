@@ -17,7 +17,9 @@ iniconfig==2.1.0
 kiwisolver==1.4.8
     # via matplotlib
 matplotlib==3.10.1
-    # via chem-deg (../pyproject.toml)
+    # via
+    #   chem-deg (../pyproject.toml)
+    #   seaborn
 networkx==3.4.2
     # via chem-deg (../pyproject.toml)
 numpy==2.2.4
@@ -27,12 +29,15 @@ numpy==2.2.4
     #   pandas
     #   rdkit
     #   scipy
+    #   seaborn
 packaging==24.2
     # via
     #   matplotlib
     #   pytest
 pandas==2.2.3
-    # via chem-deg (../pyproject.toml)
+    # via
+    #   chem-deg (../pyproject.toml)
+    #   seaborn
 pillow==11.1.0
     # via
     #   matplotlib
@@ -58,6 +63,8 @@ rdkit==2024.9.6
 ruff==0.11.2
     # via chem-deg (../pyproject.toml)
 scipy==1.15.2
+    # via chem-deg (../pyproject.toml)
+seaborn==0.13.2
     # via chem-deg (../pyproject.toml)
 six==1.17.0
     # via python-dateutil
