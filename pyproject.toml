@@ -17,6 +17,7 @@ dependencies = [
     "pandas>=2.2.3",
     "rdkit>=2024.9.6",
     "scipy>=1.15.2",
+    "seaborn",
 ]
 
 [project.optional-dependencies]

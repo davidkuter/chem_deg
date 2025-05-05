@@ -10,10 +10,10 @@ from chem_deg.reactions.reaction_classes import Hydrolysis
 from chem_deg.util import draw_image
 
 
-def draw_graph(graph: nx.MultiDiGraph, filename: str = None) -> plt.Figure:
+def draw_degradation_graph(graph: nx.MultiDiGraph, filename: str = None) -> plt.Figure:
     """
     Draw the graph and save it to a file.
-    Adapted from: 
+    Adapted from:
     https://networkx.org/documentation/stable/auto_examples/drawing/plot_multigraphs.html
 
     Parameters
@@ -45,16 +45,13 @@ def draw_graph(graph: nx.MultiDiGraph, filename: str = None) -> plt.Figure:
         mols_per_row=3,
     )
     image = plt.imread(BytesIO(png))
-    ax2.imshow(
-        image,
-        aspect="auto"
-    )
+    ax2.imshow(image, aspect="auto")
     ax2.axis("off")
 
     # Save the figure
     if filename:
         fig.savefig(filename)
-    
+
     return fig
 
 
@@ -108,6 +105,8 @@ def _compute_graph(
             for reaction, product in products:
                 if "." in product:
                     flattened = [(reaction, p) for p in product.split(".")]
+                    # Sort by length of the product string
+                    flattened = sorted(flattened, key=lambda item: len(item[1]), reverse=True)
                     flat_products.extend(flattened)
                 else:
                     flat_products.append((reaction, product))
@@ -167,4 +166,4 @@ if __name__ == "__main__":
     max_gen = 3
     graph = chemical_degradation(compound=smiles, max_generation=max_gen)
     print("Products:", graph.nodes())
-    draw_graph(graph, "chemical_degradation.png")
+    draw_degradation_graph(graph, "chemical_degradation.png")

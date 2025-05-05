@@ -1,7 +1,7 @@
 import networkx as nx
 import pytest
 
-from chem_deg.degradation import chemical_degradation, draw_graph
+from chem_deg.degradation import chemical_degradation, draw_degradation_graph
 
 
 def test_chemical_degradation():
@@ -77,6 +77,6 @@ def test_draw_graph():
     )
 
     # Draw the graph and save it to a file
-    fig = draw_graph(graph, filename=None)
+    fig = draw_degradation_graph(graph, filename=None)
 
     assert fig is not None, "Figure object should not be None."
