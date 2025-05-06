@@ -3,8 +3,8 @@ This repository provides a framework for simulating and analyzing chemical degra
 
 Reaction Libraries have been sourced from the EPA's [Chemical Transformation Simulator](https://qed.epa.gov/cts/about/reactionlibs/).
 
-![Degradation Graph](assets/degradation_graph.png)
-![Kinetics Graph](assets/degradation_kinetics.png)
+![Degradation Graph](src/chem_deg/assets/degradation_graph.png)
+![Kinetics Graph](src/chem_deg/assets/degradation_kinetics.png)
 
 ## Dependencies
 
@@ -33,7 +33,7 @@ pip install -e .
 ## Usage
 
 ```python
-from chem_deg.main import simulate_degradation
+from chem_deg import simulate_degradation
 
 # Simulate degradation starting from a SMILES string
 smiles = "CCC(=O)N(c1ccccc1)C1(C(=O)OC)CCN(CCC(=O)OC)CC1"
