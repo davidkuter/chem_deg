@@ -11,7 +11,6 @@ def test_hydrolysis():
     for reaction in hydrolysis.reactions:
         for reactant, expected_product in reaction.examples.items():
             products = reaction.react(reactant)
-            print(products)
             if products:
                 # Convert the products to SMILES
                 products = [
