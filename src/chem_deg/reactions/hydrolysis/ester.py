@@ -79,9 +79,11 @@ class PhosphorusEsterHydrolysis(Reaction):
         broken_bond = reactant_bonds - product_bonds
 
         if len(broken_bond) != 1:
-            raise ValueError(
-                f"Unable to determine leaving atom. More than one bond broken: {broken_bond}"
+            msg = (
+                f"Unable to determine leaving atom. More than one bond broken: {broken_bond}\n"
+                f"Reactant: {Chem.MolToSmiles(reactant)}\nProduct: {Chem.MolToSmiles(product)}"
             )
+            raise ValueError(msg)
 
         # Determine which atom is the leaving group and which is the Phosphorus atom
         broken_bond = list(broken_bond)[0]
