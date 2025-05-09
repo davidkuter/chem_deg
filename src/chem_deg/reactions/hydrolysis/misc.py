@@ -47,6 +47,7 @@ class AmideHydrolysis(Reaction):
             # [H;C;N] attached to [#7:4] is not specified because that would require an explicit
             # H atom to be present in the SMILES. I tried addingHs to the molecule but that caused
             # issues with other reactions so for now we will leave it out.
+            # The '!@' operator specifies that the bond between [#6:1] and [#7:4] is not part of a ring.
             reaction_smarts="[#6:3][#6:1](=[#8:2])!@[#7:4]>>[#6:3][#6:1](=[#8:2])[OH].[#7:4]",
             examples={
                 # Examples from the EPA
