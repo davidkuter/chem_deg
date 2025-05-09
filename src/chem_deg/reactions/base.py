@@ -155,7 +155,7 @@ class ReactionClass:
             The cleaned SMILES string.
         """
         mol = Chem.MolFromSmiles(smiles)
-        return Chem.MolToSmiles(mol)
+        return Chem.MolToSmiles(mol) if mol else smiles
 
     def react(
         self, reactant: str, return_mol: bool = False

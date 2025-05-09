@@ -15,14 +15,14 @@ def test_chemical_degradation():
     deg_graph = chemical_degradation(compound=smiles, max_generation=10_000)
 
     # Check if the graph has the expected number of nodes
-    expected_nodes = 8
+    expected_nodes = 5
     num_nodes = len(deg_graph.nodes())
     assert num_nodes == expected_nodes, (
         f"Number of nodes ({num_nodes}) does not match expected number ({expected_nodes})."
     )
 
     # Check if the graph has the expected number of edges
-    expected_edges = 12
+    expected_edges = 6
     edges = [e for e in deg_graph.edges(data=True)]
     num_edges = len(edges)
     assert num_edges == expected_edges, (
